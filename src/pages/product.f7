@@ -15,10 +15,9 @@
 </template>
 
 <script>
-  export default (props, { $f7route, $store }) => {
-    // Function to show the dialog
+  export default (props, { $f7route, $store, $render }) => {
+    // Dialog logic will be imported here
     const showDialog = () => {
-      // Create the dialog
       $f7.dialog.create({
         title: 'Make Project',
         content: `
@@ -41,13 +40,12 @@
           {
             text: 'Cancel',
             onClick: () => {
-              // Handle cancel action (if any additional handling is needed)
+              // Handle cancel action if needed
             }
           },
           {
             text: 'Save',
             onClick: () => {
-              // Retrieve the value of the input field
               const projectName = document.getElementById('project-name').value;
               console.log('New Project Name:', projectName);
               // Handle project name, such as saving it to store or making an API call
@@ -57,9 +55,6 @@
       }).open();
     };
 
-    return {
-      showDialog,
-      $render: true // This keeps the page rendering intact
-    };
+    return $render;
   };
 </script>
