@@ -3,34 +3,20 @@
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
-        <div class="left">
-          <a href="#" class="link back">
-            <i class="icon icon-back"></i>
-            <span class="if-not-md">Back</span>
+        <div class="title">Product</div>
+        <div class="right">
+          <a href="#" class="link">
+            <i class="icon f7-icons">plus</i>
           </a>
         </div>
-        <div class="title">${currentProduct.title}</div>
-      </div>
-    </div>
-    <div class="page-content">
-      <div class="block-title">About ${currentProduct.title}</div>
-      <div class="block">
-        ${currentProduct.description}
       </div>
     </div>
   </div>
 </template>
+
 <script>
   export default (props, { $f7route, $store }) => {
-    const products = $store.getters.products;
-    const productId = $f7route.params.id;
-    let currentProduct;
-    products.value.forEach((product) => {
-      if (product.id === productId) {
-        currentProduct = product;
-      }
-    });
-
+    // This can be used to handle any logic if required.
     return $render;
   };
 </script>
