@@ -34,34 +34,47 @@
   </div>
 </template>
 
+<!-- Script for functionality -->
 <script>
-  export default (props, { $f7route, $f7, $store }) => {
-    // Get projects from localStorage
+  export default (props, { $f7, $store }) => {
+    // Get projects from localStorage or initialize with an empty array
     let projects = JSON.parse(localStorage.getItem('projects')) || [];
 
-    // Show an alert when clicking the plus icon
+    // Function to show the prompt dialog to add a new project
     const showAlert = () => {
       $f7.dialog.prompt('Enter Project Name', 'New Project', (projectName) => {
         if (projectName) {
-          // Add the project to the list and save to localStorage
+          // Add the new project to the list
           projects.push(projectName);
+          // Save the updated list to localStorage
           localStorage.setItem('projects', JSON.stringify(projects));
         }
       });
     };
 
-    // Delete a project from the list and update localStorage
+    // Function to delete a project from the list
     const deleteProject = (index) => {
+      // Remove the project from the array
       projects.splice(index, 1);
+      // Update localStorage after deletion
       localStorage.setItem('projects', JSON.stringify(projects));
     };
 
-    // Rendering logic
+    // Return the necessary methods and the list of projects
     return {
-      projects, // The list of projects that will be rendered
-      showAlert, // The function to trigger the alert
-      deleteProject, // The function to delete a project
-      $render, // Ensuring that the render logic is still handled by the component
+      projects,      // Projects to be rendered in the template
+      showAlert,     // Function to trigger the project adding prompt
+      deleteProject, // Function to handle project deletion
     };
+  };
+</script>
+
+<!-- Script for rendering -->
+<script>
+  export default {
+    // Rendering logic - this script will handle displaying the data
+    render() {
+      return this.$render();
+    }
   };
 </script>
