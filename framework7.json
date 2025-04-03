@@ -1,0 +1,19 @@
+{
+  "cwd": "/Users/endritademi/Testingios",
+  "type": [
+    "web",
+    "pwa"
+  ],
+  "name": "Test",
+  "framework": "core",
+  "template": "tabs",
+  "bundler": "vite",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkMode": false,
+    "iconFonts": true
+  },
+  "customBuild": false
+}

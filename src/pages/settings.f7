@@ -1,0 +1,172 @@
+<template>
+  <div class="page" data-name="settings">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="title">Settings</div>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="block-title block-title-medium">Layout Themes</div>
+      <div class="block block-strong inset">
+        <p>Change between Light and Dark Mode.</p>
+        <div class="grid grid-cols-2 grid-gap">
+          <div class="demo-theme-picker bg-color-white" 
+               @click=${() => setScheme('light')}
+               style="border-radius: 16px; padding: 10px; text-align: center;">
+            ${theme === 'light' && $h`
+              <label class="checkbox">
+                <input type="checkbox" checked disabled />
+                <i class="icon-checkbox"></i>
+              </label>
+            `}
+            <p>Light</p>
+          </div>
+          <div class="demo-theme-picker bg-color-black" 
+               @click=${() => setScheme('dark')}
+               style="border-radius: 16px; padding: 10px; text-align: center;">
+            ${theme === 'dark' && $h`
+              <label class="checkbox">
+                <input type="checkbox" checked disabled />
+                <i class="icon-checkbox"></i>
+              </label>
+            `}
+            <p>Dark</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accent Color Section with Inset and Strong Divider -->
+      <div class="list inset list-strong list-dividers-ios">
+        <ul>
+          <li>
+            <a href="#" class="list-button" @click=${() => showColorPicker()}>
+              <i class="icon f7-icons" style="margin-right: 8px;">paintbrush</i>
+              <span>Choose Accent Color</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="block-title block-title-medium">App Settings</div>
+
+
+
+      <div class="list inset list-strong list-dividers-ios">
+        <ul>
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">
+                <i class="icon f7-icons color-accent" style="margin-right: 8px;">globe</i>
+                <span class="color-accent">Open Links in Safari</span>
+              </div>
+              <div class="item-after">
+                <label class="toggle">
+                  <input type="checkbox" />
+                  <span class="toggle-icon"></span>
+                </label>
+              </div>
+            </div>
+          </li>
+        </ul>
+        
+      </div>
+
+      <div class="block-title block-title-medium">Our Socials</div>
+      <div class="list list-strong inset list-dividers-ios simple-list">
+        <ul>
+          <li class="item-content" id="discord-item">
+            <div class="item-inner">
+              <div class="item-title">
+                <i class="icon f7-icons color-accent" style="margin-right: 8px;">globe</i>
+                <span class="color-accent">Discord Server</span>
+              </div>
+            </div>
+          </li>
+          <li class="item-content" id="tiktok-item">
+            <div class="item-inner">
+              <div class="item-title">
+                <i class="icon f7-icons color-accent" style="margin-right: 8px;">globe</i>
+                <span class="color-accent">TikTok</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <script>
+        // Event listener for the Discord item
+        document.getElementById('discord-item').addEventListener('click', function() {
+          window.location.href = 'https://discord.com';
+        });
+      
+        // Event listener for the TikTok item
+        document.getElementById('tiktok-item').addEventListener('click', function() {
+          window.location.href = 'https://www.tiktok.com';
+        });
+      </script>
+            
+      
+
+
+
+    </div>
+  </div>
+</template>
+
+
+
+
+<script>
+  export default (props, { $f7, $, $on, $onMounted, $update }) => {
+    let theme = 'light';
+    let themeColor = $('html').css('--f7-color-primary').trim();
+
+    const colors = Object.keys($f7.colors).filter((c) => c !== 'primary' && c !== 'white' && c !== 'black');
+
+    // Function to set the layout theme (Light/Dark)
+    const setScheme = (newTheme) => {
+      $f7.setDarkMode(newTheme === 'dark');
+      theme = newTheme;
+      localStorage.setItem('theme', newTheme);  // Save to localStorage
+      $update();
+    };
+
+    // Function to set the color theme
+    const setColorTheme = (newColor) => {
+      themeColor = $f7.colors[newColor];
+      $f7.setColorTheme(themeColor);
+      localStorage.setItem('accentColor', newColor);  // Save to localStorage
+      $update();
+    };
+
+    const setCustomColor = (newColor) => {
+      themeColor = newColor;
+      $f7.setColorTheme(newColor);
+      localStorage.setItem('accentColor', newColor);  // Save to localStorage
+      $update();
+    };
+
+    const showColorPicker = () => {
+      $f7.dialog.create({
+        title: 'Choose Accent Color',
+        buttons: colors.map((color) => ({
+          text: color,
+          onClick: () => {
+            setColorTheme(color);
+          },
+        })),
+        verticalButtons: true,
+      }).open();
+    };
+
+    $on('pageInit', () => {
+      // Load saved theme and color from localStorage
+      const savedTheme = localStorage.getItem('theme');
+      const savedColor = localStorage.getItem('accentColor');
+      if (savedTheme) setScheme(savedTheme);
+      if (savedColor) setColorTheme(savedColor);
+    });
+
+    return $render;
+  };
+</script>
