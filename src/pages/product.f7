@@ -24,20 +24,16 @@
 </template>
 
 <script>
-export default () => {
-  return {
-    methods: {
-      // Method to show the prompt dialog
-      showPrompt() {
-        this.$f7.dialog.prompt('Make New Project', 'Folder Name', (value) => {
-          if (value) {
-            this.$f7.dialog.alert(`Project folder created: ${value}`);
-          }
-        });
-      }
-    },
-    // Make sure to return $render to properly render the page
-    return $render;
-  };
-};
+export default {
+  methods: {
+    // Method to show the prompt dialog
+    showPrompt() {
+      this.$f7.dialog.prompt('Make New Project', 'Folder Name', (value) => {
+        if (value) {
+          this.$f7.dialog.alert(`Project folder created: ${value}`);
+        }
+      });
+    }
+  }
+}
 </script>
