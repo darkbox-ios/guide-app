@@ -5,105 +5,61 @@
       <div class="navbar-inner sliding">
         <div class="title">Product</div>
         <div class="right">
-          <a href="#" class="link" @click="showNewProjectDialog">
+          <a href="#" class="link" @click="showDialog">
             <i class="icon f7-icons">plus</i>
           </a>
         </div>
       </div>
-    </div>
-
-    <!-- Inset Grouped List to display Projects -->
-    <div class="list inset">
-      <ul id="project-list">
-        <!-- List of projects will be dynamically inserted here -->
-      </ul>
     </div>
   </div>
 </template>
 
 <script>
   export default (props, { $f7route, $store }) => {
-    // This can be used to handle any logic if required.
-    return $render;
-  };
-</script>
-
-<script>
-  export default {
-    mounted() {
-      // Load projects from localStorage when the page is loaded
-      this.loadProjects();
-    },
-    methods: {
-      // Show the alert dialog to create a new project
-      showNewProjectDialog() {
-        const f7 = this.$f7;
-        
-        // Create the alert dialog
-        f7.dialog.prompt('Enter Project Name', 'New Project', (projectName) => {
-          if (projectName && projectName.trim() !== '') {
-            this.addProject(projectName);
+    // Function to show the dialog
+    const showDialog = () => {
+      // Create the dialog
+      $f7.dialog.create({
+        title: 'Make Project',
+        content: `
+          <div class="list no-hairlines-md">
+            <ul>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title label">New Project Name</div>
+                    <div class="item-input">
+                      <input type="text" placeholder="New Project Name" id="project-name">
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        `,
+        buttons: [
+          {
+            text: 'Cancel',
+            onClick: () => {
+              // Handle cancel action (if any additional handling is needed)
+            }
+          },
+          {
+            text: 'Save',
+            onClick: () => {
+              // Retrieve the value of the input field
+              const projectName = document.getElementById('project-name').value;
+              console.log('New Project Name:', projectName);
+              // Handle project name, such as saving it to store or making an API call
+            }
           }
-        });
-      },
+        ]
+      }).open();
+    };
 
-      // Add new project to the list and save it to localStorage
-      addProject(projectName) {
-        const projects = this.getProjectsFromStorage();
-        projects.push({ name: projectName });
-        this.saveProjectsToStorage(projects);
-        this.renderProjects();
-      },
-
-      // Delete a project and update the list in localStorage
-      deleteProject(index) {
-        const projects = this.getProjectsFromStorage();
-        projects.splice(index, 1);
-        this.saveProjectsToStorage(projects);
-        this.renderProjects();
-      },
-
-      // Get projects from localStorage
-      getProjectsFromStorage() {
-        return JSON.parse(localStorage.getItem('projects')) || [];
-      },
-
-      // Save the updated project list to localStorage
-      saveProjectsToStorage(projects) {
-        localStorage.setItem('projects', JSON.stringify(projects));
-      },
-
-      // Render the list of projects on the page
-      renderProjects() {
-        const projects = this.getProjectsFromStorage();
-        const projectList = document.getElementById('project-list');
-        projectList.innerHTML = '';
-
-        projects.forEach((project, index) => {
-          const listItem = document.createElement('li');
-          listItem.classList.add('swipeout');
-          
-          listItem.innerHTML = `
-            <div class="swipeout-content">
-              <div class="item-inner">
-                <div class="item-title">${project.name}</div>
-              </div>
-            </div>
-            <div class="swipeout-actions-right">
-              <a href="#" class="swipeout-delete" @click="deleteProject(${index})">
-                Delete
-              </a>
-            </div>
-          `;
-
-          projectList.appendChild(listItem);
-        });
-      },
-
-      // Load projects when the page is mounted
-      loadProjects() {
-        this.renderProjects();
-      }
-    }
+    return {
+      showDialog,
+      $render: true // This keeps the page rendering intact
+    };
   };
 </script>
