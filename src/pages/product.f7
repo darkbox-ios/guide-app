@@ -5,18 +5,61 @@
       <div class="navbar-inner sliding">
         <div class="title">Product</div>
         <div class="right">
-          <a href="#" class="link">
+          <a href="#" class="link" @click="showAlert">
             <i class="icon f7-icons">plus</i>
           </a>
         </div>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <!-- Grouped list of projects -->
+      <div class="list inset">
+        <ul>
+          <li v-for="(project, index) in projects" :key="index" class="swipeout">
+            <div class="swipeout-content">
+              <a href="#" class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">{{ project }}</div>
+                </div>
+              </a>
+            </div>
+            <div class="swipeout-actions-right">
+              <a href="#" class="swipeout-delete" @click="deleteProject(index)">Delete</a>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  export default (props, { $f7route, $store }) => {
-    // This can be used to handle any logic if required.
-    return $render;
+  export default (props, { $f7route, $f7, $store }) => {
+    // Get projects from localStorage
+    let projects = JSON.parse(localStorage.getItem('projects')) || [];
+
+    // Show an alert when clicking the plus icon
+    const showAlert = () => {
+      $f7.dialog.prompt('Enter Project Name', 'New Project', (projectName) => {
+        if (projectName) {
+          // Add the project to the list and save to localStorage
+          projects.push(projectName);
+          localStorage.setItem('projects', JSON.stringify(projects));
+        }
+      });
+    };
+
+    // Delete a project from the list and update localStorage
+    const deleteProject = (index) => {
+      projects.splice(index, 1);
+      localStorage.setItem('projects', JSON.stringify(projects));
+    };
+
+    return {
+      projects, // The list of projects that will be rendered
+      showAlert, // The function to trigger the alert
+      deleteProject // The function to delete a project
+    };
   };
 </script>
