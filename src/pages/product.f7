@@ -2,15 +2,15 @@
   <div class="page" data-name="product">
     <div class="navbar">
       <div class="navbar-bg"></div>
-      <div class="navbar-inner sliding">
+      <div class="navbar-inner sliding" style="display: flex; justify-content: space-between; align-items: center;">
         <div class="title">File Editor</div>
         <div class="right">
           <!-- Pencil Icon for Editing Mode -->
-          <a href="#" class="link icon-only" @click=${() => toggleEditMode()}>
+          <a href="#" class="link icon-only" @click=${() => toggleEditMode()} style="font-size: 20px;">
             <i class="icon f7-icons">pencil</i>
           </a>
           <!-- Plus Icon for Adding New Item -->
-          <a href="#" class="link icon-only" @click=${() => showPrompt()}>
+          <a href="#" class="link icon-only" @click=${() => showPrompt()} style="font-size: 20px;">
             <i class="icon f7-icons">plus</i>
           </a>
         </div>
@@ -18,11 +18,11 @@
     </div>
 
     <div class="page-content">
-      <div class="block-title">My Projects</div>
+      <div class="block-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 600;">My Projects</div>
       
-      <div class="block block-strong inset">
+      <div class="block block-strong inset" style="padding: 0;">
         <!-- The list will be rendered dynamically here -->
-        <div class="list inset list-strong list-dividers-ios">
+        <div class="list inset list-strong list-dividers-ios" style="padding: 0; margin: 0;">
           <ul id="dynamic-list" style="padding: 0; margin: 0; width: 100%;">
             <!-- Items will be injected here dynamically -->
           </ul>
@@ -81,6 +81,8 @@
             const listTitle = document.createElement('div');
             listTitle.classList.add('item-title');
             listTitle.textContent = item.title;
+            listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
+            listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
 
             listInner.appendChild(listTitle);
 
@@ -90,6 +92,7 @@
               deleteButton.classList.add('link', 'icon-only');
               deleteButton.innerHTML = '<i class="icon f7-icons">trash</i>';
               deleteButton.addEventListener('click', () => deleteItem(index));
+              deleteButton.style.fontSize = '20px'; // Optional: Adjust the delete icon size
               listInner.appendChild(deleteButton);
             }
 
@@ -107,41 +110,3 @@
     </script>
   </div>
 </template>
-
-<style>
-  /* Adjust list items to be less fat and more compact */
-  .item-content {
-    padding: 8px 16px !important;  /* Reduce padding */
-    margin: 4px 0 !important;      /* Reduce margin */
-  }
-
-  .list {
-    padding: 0;
-    margin: 0;
-  }
-
-  .item-title {
-    font-size: 14px;  /* Optional: Make text slightly smaller */
-    line-height: 1.5; /* Optional: Make the text more compact */
-  }
-
-  .block-strong.inset {
-    padding: 0;
-  }
-
-  .block-title {
-    margin-bottom: 16px;
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .navbar-inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .icon.f7-icons {
-    font-size: 20px;
-  }
-</style>
