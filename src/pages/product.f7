@@ -1,60 +1,43 @@
 <template>
-  <div class="page" data-name="product">
+  <div class="page">
+    <!-- Navbar (Topbar) -->
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
-        <div class="title">Product</div>
+        <div class="title">Compile Project</div>
         <div class="right">
-          <a href="#" class="link" @click="showDialog">
+          <!-- Plus Icon Button -->
+          <a href="#" class="link icon-only" @click="showPrompt">
             <i class="icon f7-icons">plus</i>
           </a>
         </div>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="block">
+        <p>Welcome to the Compile Project app. Here you can manage your project folders.</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  export default (props, { $f7route, $store, $render }) => {
-    // Dialog logic will be imported here
-    const showDialog = () => {
-      $f7.dialog.create({
-        title: 'Make Project',
-        content: `
-          <div class="list no-hairlines-md">
-            <ul>
-              <li>
-                <div class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title label">New Project Name</div>
-                    <div class="item-input">
-                      <input type="text" placeholder="New Project Name" id="project-name">
-                    </div>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        `,
-        buttons: [
-          {
-            text: 'Cancel',
-            onClick: () => {
-              // Handle cancel action if needed
-            }
-          },
-          {
-            text: 'Save',
-            onClick: () => {
-              const projectName = document.getElementById('project-name').value;
-              console.log('New Project Name:', projectName);
-              // Handle project name, such as saving it to store or making an API call
-            }
+export default () => {
+  return {
+    methods: {
+      // Method to show the prompt dialog
+      showPrompt() {
+        this.$f7.dialog.prompt('Make New Project', 'Folder Name', (value) => {
+          if (value) {
+            this.$f7.dialog.alert(`Project folder created: ${value}`);
           }
-        ]
-      }).open();
-    };
-
+        });
+      }
+    },
+    // Make sure to return $render to properly render the page
     return $render;
   };
+};
 </script>
