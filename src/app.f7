@@ -41,17 +41,17 @@
       <div class="toolbar toolbar-bottom tabbar-icons">
         <div class="toolbar-inner">
           <a href="#view-home" class="tab-link tab-link-active">
-            <i class="icon f7-icons if-not-md">square_grid_2x2_fill</i>
+            <i class="icon f7-icons if-not-md">house</i>
             <i class="icon material-icons if-md">home</i>
             <span class="tabbar-label">Home</span>
           </a>
           <a href="#view-catalog" class="tab-link">
-            <i class="icon f7-icons if-not-md">square_list_fill</i>
+            <i class="icon f7-icons if-not-md">pencil</i>
             <i class="icon material-icons if-md">pencil</i>
             <span class="tabbar-label">File Editor</span>
           </a>
           <a href="#view-tweaks" class="tab-link">
-            <i class="icon f7-icons if-not-md">signature</i>
+            <i class="icon f7-icons if-not-md">archivebox</i>
             <i class="icon material-icons if-md">archivebox</i>
             <span class="tabbar-label">Compile Project</span>
           </a>
