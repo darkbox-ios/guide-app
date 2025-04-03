@@ -19,21 +19,109 @@
       <div class="block">
         <p>Welcome to the Compile Project app. Here you can manage your project folders.</p>
       </div>
+
+      <!-- Horizontally scrollable carousel container for cards -->
+      <div class="carousel-container">
+        <!-- Red Card -->
+        <div class="card card-expandable">
+          <div class="card-content">
+            <div class="bg-color-red" style="height: 300px">
+              <div class="card-header text-color-white display-block">
+                Framework7
+                <br />
+                <small style="opacity: 0.7">Build Mobile Apps</small>
+              </div>
+              <a class="link card-close card-opened-fade-in color-white"
+                style="position: absolute; right: 15px; top: 15px">
+                <i class="icon f7-icons">xmark_circle_fill</i>
+              </a>
+            </div>
+            <div class="card-content-padding">
+              <p>Framework7 is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps
+                with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool
+                to show working app prototypes as soon as possible.</p>
+              <p>The main approach of the Framework7 is to give you an opportunity to create iOS and Android apps with
+                HTML, CSS, and JavaScript easily and clearly.</p>
+              <p>Framework7 is focused only on iOS and Android (Material) to bring the best experience and simplicity.</p>
+              <p>
+                <a class="button button-fill button-round button-large card-close color-red">Close</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Yellow Card -->
+        <div class="card card-expandable">
+          <div class="card-content">
+            <div class="bg-color-yellow" style="height: 300px">
+              <div class="card-header text-color-black display-block">
+                Framework7
+                <br />
+                <small style="opacity: 0.7">Build Mobile Apps</small>
+              </div>
+              <a class="link card-close card-opened-fade-in color-black"
+                style="position: absolute; right: 15px; top: 15px">
+                <i class="icon f7-icons">xmark_circle_fill</i>
+              </a>
+            </div>
+            <div class="card-content-padding">
+              <p>Framework7 allows you to quickly prototype mobile apps and build fully-featured mobile applications
+                that look and feel native.</p>
+              <p>It is highly customizable and enables you to easily build mobile apps or web apps for both iOS and
+                Android.</p>
+              <p>Framework7 allows you to implement Material Design (Android) or iOS native look easily with zero
+                effort.</p>
+              <p>
+                <a class="button button-fill button-round button-large card-close color-yellow text-color-black">Close</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Another Card Example -->
+        <div class="card card-expandable">
+          <div class="card-content">
+            <div class="bg-color-green" style="height: 300px">
+              <div class="card-header text-color-white display-block">
+                Framework7
+                <br />
+                <small style="opacity: 0.7">Build Mobile Apps</small>
+              </div>
+              <a class="link card-close card-opened-fade-in color-white"
+                style="position: absolute; right: 15px; top: 15px">
+                <i class="icon f7-icons">xmark_circle_fill</i>
+              </a>
+            </div>
+            <div class="card-content-padding">
+              <p>Framework7 provides a fast and reliable framework to build fully-featured hybrid apps that work across
+                platforms, specifically focused on iOS and Android.</p>
+              <p>It is built for high performance with an extensive set of pre-designed components and native-like
+                experiences.</p>
+              <p>
+                <a class="button button-fill button-round button-large card-close color-green">Close</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- End carousel-container -->
     </div>
   </div>
 </template>
 
 <script>
-export default {
-  methods: {
-    // Method to show the prompt dialog
-    showPrompt() {
-      this.$f7.dialog.prompt('Make New Project', 'Folder Name', (value) => {
-        if (value) {
-          this.$f7.dialog.alert(`Project folder created: ${value}`);
-        }
-      });
+export default () => {
+  return {
+    methods: {
+      // Method to show the prompt dialog
+      showPrompt() {
+        this.$f7.dialog.prompt('Make New Project', 'Folder Name', (value) => {
+          if (value) {
+            this.$f7.dialog.alert(`Project folder created: ${value}`);
+          }
+        });
+      }
     }
-  }
+  };
 }
 </script>
