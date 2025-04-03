@@ -3,7 +3,7 @@
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
-        <div class="title">My List</div>
+        <div class="title">File Editor</div>
         <div class="right">
           <!-- Pencil Icon for Editing Mode -->
           <a href="#" class="link icon-only" @click=${() => toggleEditMode()}>
@@ -18,7 +18,7 @@
     </div>
 
     <div class="page-content">
-      <div class="block-title">Grouped List</div>
+      <div class="block-title">My Projects</div>
       
       <div class="block block-strong inset">
         <!-- The list will be rendered dynamically here -->
