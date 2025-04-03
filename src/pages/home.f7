@@ -3,14 +3,13 @@
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
-        <div class="title">Cards Expandable</div>
+        <div class="title">Serenity Tweak-maker</div>
       </div>
     </div>
 
     <div class="page-content">
       <div class="block">
-        <p>In addition to usual <a href="/cards/">Cards</a> there are also Expandable Cards that allow to store more
-          information and illustrations about a particular subject.</p>
+        <p>Serenity Tweakmaker makes it possible to code, and straightly compile a Theos Project. </p>
       </div>
 
       <!-- Horizontally scrollable carousel container for cards -->
