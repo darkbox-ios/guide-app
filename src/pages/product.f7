@@ -5,76 +5,105 @@
       <div class="navbar-inner sliding">
         <div class="title">Product</div>
         <div class="right">
-          <a href="#" class="link" @click="showAlert">
+          <a href="#" class="link" @click="showNewProjectDialog">
             <i class="icon f7-icons">plus</i>
           </a>
         </div>
       </div>
     </div>
 
-    <div class="page-content">
-      <!-- Grouped list of projects -->
-      <div class="list inset">
-        <ul>
-          <li v-for="(project, index) in projects" :key="index" class="swipeout">
-            <div class="swipeout-content">
-              <a href="#" class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">{{ project }}</div>
-                </div>
-              </a>
-            </div>
-            <div class="swipeout-actions-right">
-              <a href="#" class="swipeout-delete" @click="deleteProject(index)">Delete</a>
-            </div>
-          </li>
-        </ul>
-      </div>
+    <!-- Inset Grouped List to display Projects -->
+    <div class="list inset">
+      <ul id="project-list">
+        <!-- List of projects will be dynamically inserted here -->
+      </ul>
     </div>
   </div>
 </template>
 
-<!-- Script for functionality -->
 <script>
-  export default (props, { $f7, $store }) => {
-    // Get projects from localStorage or initialize with an empty array
-    let projects = JSON.parse(localStorage.getItem('projects')) || [];
-
-    // Function to show the prompt dialog to add a new project
-    const showAlert = () => {
-      $f7.dialog.prompt('Enter Project Name', 'New Project', (projectName) => {
-        if (projectName) {
-          // Add the new project to the list
-          projects.push(projectName);
-          // Save the updated list to localStorage
-          localStorage.setItem('projects', JSON.stringify(projects));
-        }
-      });
-    };
-
-    // Function to delete a project from the list
-    const deleteProject = (index) => {
-      // Remove the project from the array
-      projects.splice(index, 1);
-      // Update localStorage after deletion
-      localStorage.setItem('projects', JSON.stringify(projects));
-    };
-
-    // Return the necessary methods and the list of projects
-    return {
-      projects,      // Projects to be rendered in the template
-      showAlert,     // Function to trigger the project adding prompt
-      deleteProject, // Function to handle project deletion
-    };
+  export default (props, { $f7route, $store }) => {
+    // This can be used to handle any logic if required.
+    return $render;
   };
 </script>
 
-<!-- Script for rendering -->
 <script>
   export default {
-    // Rendering logic - this script will handle displaying the data
-    render() {
-      return this.$render();
+    mounted() {
+      // Load projects from localStorage when the page is loaded
+      this.loadProjects();
+    },
+    methods: {
+      // Show the alert dialog to create a new project
+      showNewProjectDialog() {
+        const f7 = this.$f7;
+        
+        // Create the alert dialog
+        f7.dialog.prompt('Enter Project Name', 'New Project', (projectName) => {
+          if (projectName && projectName.trim() !== '') {
+            this.addProject(projectName);
+          }
+        });
+      },
+
+      // Add new project to the list and save it to localStorage
+      addProject(projectName) {
+        const projects = this.getProjectsFromStorage();
+        projects.push({ name: projectName });
+        this.saveProjectsToStorage(projects);
+        this.renderProjects();
+      },
+
+      // Delete a project and update the list in localStorage
+      deleteProject(index) {
+        const projects = this.getProjectsFromStorage();
+        projects.splice(index, 1);
+        this.saveProjectsToStorage(projects);
+        this.renderProjects();
+      },
+
+      // Get projects from localStorage
+      getProjectsFromStorage() {
+        return JSON.parse(localStorage.getItem('projects')) || [];
+      },
+
+      // Save the updated project list to localStorage
+      saveProjectsToStorage(projects) {
+        localStorage.setItem('projects', JSON.stringify(projects));
+      },
+
+      // Render the list of projects on the page
+      renderProjects() {
+        const projects = this.getProjectsFromStorage();
+        const projectList = document.getElementById('project-list');
+        projectList.innerHTML = '';
+
+        projects.forEach((project, index) => {
+          const listItem = document.createElement('li');
+          listItem.classList.add('swipeout');
+          
+          listItem.innerHTML = `
+            <div class="swipeout-content">
+              <div class="item-inner">
+                <div class="item-title">${project.name}</div>
+              </div>
+            </div>
+            <div class="swipeout-actions-right">
+              <a href="#" class="swipeout-delete" @click="deleteProject(${index})">
+                Delete
+              </a>
+            </div>
+          `;
+
+          projectList.appendChild(listItem);
+        });
+      },
+
+      // Load projects when the page is mounted
+      loadProjects() {
+        this.renderProjects();
+      }
     }
   };
 </script>
