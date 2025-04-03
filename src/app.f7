@@ -69,7 +69,7 @@
       </div>
 
       <!-- Catalog View -->
-      <div id="view-catalog" class="view view-init tab" data-name="catalog" data-url="/catalog/">
+      <div id="view-catalog" class="view view-init tab" data-name="product" data-url="/product/">
         <!-- Catalog page will be loaded here dynamically from /catalog/ route -->
       </div>
 

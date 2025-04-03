@@ -33,7 +33,7 @@ var routes = [
     component: CatalogPage,
   },
   {
-    path: '/product/:id/',
+    path: '/product/',
     component: ProductPage,
   },
   {
