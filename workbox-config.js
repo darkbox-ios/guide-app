@@ -1,8 +1,7 @@
 module.exports = {
-  globDirectory: 'www/',
-  globPatterns: ['**/*.{woff,woff2,js,css,png,jpg,svg,html}'],
-  /* pass array of globs to exclude from caching */
-  globIgnores: [],
-  ignoreURLParametersMatching: [/^utm_/, /^fbclid$/],
-  swDest: 'www/service-worker.js',
+  globDirectory: 'public/', // No longer needed if you're disabling service worker
+  globPatterns: [], // Empty or comment this out
+  globIgnores: [],  // Empty or comment this out
+  ignoreURLParametersMatching: [],
+  swDest: '',  // Do not output a service worker file
 };
