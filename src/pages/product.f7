@@ -1,5 +1,5 @@
 <template>
-  <div class="page" data-name="product">
+  <div class="page" data-name="new-page">
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
@@ -23,7 +23,7 @@
       <div class="block block-strong inset">
         <!-- The list will be rendered dynamically here -->
         <div class="list inset list-strong list-dividers-ios">
-          <ul id="dynamic-list">
+          <ul id="dynamic-list" style="padding: 0; margin: 0; width: 100%;">
             <!-- Items will be injected here dynamically -->
           </ul>
         </div>
@@ -38,7 +38,7 @@
         // Toggle editing mode
         const toggleEditMode = () => {
           isEditing = !isEditing;
-          $update();
+          renderList();  // Re-render the list to show or hide delete buttons
         };
 
         // Show the prompt to add a new item
@@ -54,24 +54,26 @@
         const addItem = (title) => {
           listItems.push({ title });
           localStorage.setItem('listItems', JSON.stringify(listItems));
-          $update();
+          renderList();  // Immediately re-render the list without refreshing
         };
 
         // Delete an item from the list
         const deleteItem = (index) => {
           listItems.splice(index, 1);
           localStorage.setItem('listItems', JSON.stringify(listItems));
-          $update();
+          renderList();  // Immediately re-render the list without refreshing
         };
 
-        // Render the list items
+        // Render the list items dynamically
         const renderList = () => {
           const listElement = document.getElementById('dynamic-list');
-          listElement.innerHTML = '';
+          listElement.innerHTML = '';  // Clear the list before re-rendering
 
           listItems.forEach((item, index) => {
             const listItem = document.createElement('li');
             listItem.classList.add('item-content');
+            listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
+            listItem.style.margin = '4px 0';      // Reduce margin to make it more compact
 
             const listInner = document.createElement('div');
             listInner.classList.add('item-inner');
@@ -97,12 +99,7 @@
         };
 
         $on('pageInit', () => {
-          renderList();
-        });
-
-        // Re-render the list every time the listItems change
-        $update(() => {
-          renderList();
+          renderList();  // Render the list when the page is initialized
         });
 
         return $render;
@@ -110,3 +107,41 @@
     </script>
   </div>
 </template>
+
+<style>
+  /* Adjust list items to be less fat and more compact */
+  .item-content {
+    padding: 8px 16px !important;  /* Reduce padding */
+    margin: 4px 0 !important;      /* Reduce margin */
+  }
+
+  .list {
+    padding: 0;
+    margin: 0;
+  }
+
+  .item-title {
+    font-size: 14px;  /* Optional: Make text slightly smaller */
+    line-height: 1.5; /* Optional: Make the text more compact */
+  }
+
+  .block-strong.inset {
+    padding: 0;
+  }
+
+  .block-title {
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .navbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .icon.f7-icons {
+    font-size: 20px;
+  }
+</style>
