@@ -56,10 +56,12 @@
       localStorage.setItem('projects', JSON.stringify(projects));
     };
 
+    // Rendering logic
     return {
       projects, // The list of projects that will be rendered
       showAlert, // The function to trigger the alert
-      deleteProject // The function to delete a project
+      deleteProject, // The function to delete a project
+      $render, // Ensuring that the render logic is still handled by the component
     };
   };
 </script>
