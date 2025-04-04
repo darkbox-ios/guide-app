@@ -73,17 +73,9 @@
             this.renderList();  // Immediately re-render the list without refreshing
           },
 
-          // Show a dialog with template options when a project is clicked
-          chooseTemplate(index) {
-            // Show alert with options
-            this.$f7.dialog.alert(
-              `Choose a template for project "${this.listItems[index].title}"`,
-              'Template Options',
-              () => {
-                // After choosing the template, do nothing
-                // You can log the selected project title if needed, for now it just shows the alert
-              }
-            );
+          // Show an alert when a project is clicked
+          openAlert(item) {
+            this.$f7.dialog.alert(`You selected the project: "${item.title}"`);
           },
 
           // Render the list items dynamically
@@ -105,7 +97,7 @@
               listTitle.textContent = item.title;
               listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
               listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
-              listTitle.addEventListener('click', () => this.chooseTemplate(index));  // Show template dialog on click
+              listTitle.addEventListener('click', () => this.openAlert(item));  // Show alert on click
 
               listInner.appendChild(listTitle);
 
