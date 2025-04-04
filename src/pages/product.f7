@@ -1,60 +1,218 @@
 <template>
-  <div class="page">
-    <!-- Navbar with a background -->
+  <div class="page" data-name="product">
     <div class="navbar">
       <div class="navbar-bg"></div>
-      <div class="navbar-inner">
-        <div class="title sliding">Compile</div>
-        <!-- Right side with Plus icon -->
+      <div class="navbar-inner sliding" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="title">File Editor</div>
         <div class="right">
-          <a class="link icon-only" @click="openFilePicker">
+          <!-- Pencil Icon for Editing Mode -->
+          <a href="#" class="link icon-only" @click=${() => toggleEditMode()} style="font-size: 20px;">
+            <i class="icon f7-icons">pencil</i>
+          </a>
+          <!-- Plus Icon for Adding New Item -->
+          <a href="#" class="link icon-only" @click=${() => showPrompt()} style="font-size: 20px;">
             <i class="icon f7-icons">plus</i>
           </a>
         </div>
       </div>
     </div>
 
-    <!-- Page content -->
     <div class="page-content">
-      <!-- Inset Grouped List Item -->
-      <div class="list inset">
-        <ul>
-          <li class="item-content">
-            <div class="item-inner">
-              <!-- Left section with the folder icon -->
-              <div class="item-title">
-                <i class="f7-icons">folder</i> <span id="file-name">No file selected</span>
-              </div>
-            </div>
-          </li>
-          <!-- Compile Button -->
-          <li>
-            <a href="#" class="button button-fill color-accent" style="width: 100%;">Compile</a>
-          </li>
-        </ul>
+      <div class="block-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 600;">My Projects</div>
+      
+      <div class="block block-strong inset" style="padding: 0;">
+        <!-- The list will be rendered dynamically here -->
+        <div class="list inset list-strong list-dividers-ios" style="padding: 0; margin: 0;">
+          <ul id="dynamic-list" style="padding: 0; margin: 0; width: 100%;">
+            <!-- Items will be injected here dynamically -->
+          </ul>
+        </div>
       </div>
     </div>
+
+    <script>
+      export default (props, { $f7, $, $on, $onMounted, $update }) => {
+        let isEditing = false;
+        let listItems = JSON.parse(localStorage.getItem('listItems')) || [];
+
+        // Toggle editing mode
+        const toggleEditMode = () => {
+          isEditing = !isEditing;
+          renderList();  // Re-render the list to show or hide delete buttons
+        };
+
+        // Show the prompt to add a new item
+        const showPrompt = () => {
+          $f7.dialog.prompt('Enter the title for the new item:', '', (value) => {
+            if (value) {
+              addItem(value);
+            }
+          });
+        };
+
+        // Add a new item to the list
+        const addItem = (title) => {
+          listItems.push({ title });
+          localStorage.setItem('listItems', JSON.stringify(listItems));
+          renderList();  // Immediately re-render the list without refreshing
+        };
+
+        // Delete an item from the list
+        const deleteItem = (index) => {
+          listItems.splice(index, 1);
+          localStorage.setItem('listItems', JSON.stringify(listItems));
+          renderList();  // Immediately re-render the list without refreshing
+        };
+
+        // Render the list items dynamically
+        const renderList = () => {
+          const listElement = document.getElementById('dynamic-list');
+          listElement.innerHTML = '';  // Clear the list before re-rendering
+
+          listItems.forEach((item, index) => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('item-content');
+            listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
+            listItem.style.margin = '4px 0';      // Reduce margin to make it more compact
+
+            const listInner = document.createElement('div');
+            listInner.classList.add('item-inner');
+
+            const listTitle = document.createElement('div');
+            listTitle.classList.add('item-title');
+            listTitle.textContent = item.title;
+            listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
+            listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
+
+            listInner.appendChild(listTitle);
+
+            if (isEditing) {
+              const deleteButton = document.createElement('a');
+              deleteButton.href = '#';
+              deleteButton.classList.add('link', 'icon-only');
+              deleteButton.innerHTML = '<i class="icon f7-icons">trash</i>';
+              deleteButton.addEventListener('click', () => deleteItem(index));
+              deleteButton.style.fontSize = '20px'; // Optional: Adjust the delete icon size
+              listInner.appendChild(deleteButton);
+            }
+
+            // Add event listener to open alert with vertical buttons on click
+            listItem.addEventListener('click', () => {
+              $f7.dialog.create({
+                title: 'Templates',
+                buttons: [
+                  {
+                    text: 'Modern Application',
+                    onClick: () => {
+                      console.log('Button 1 selected');
+                    },
+                  },
+                  {
+                    text: 'Modern Swift Application',
+                    onClick: () => {
+                      console.log('Button 2 selected');
+                    },
+                  },
+                  {
+                    text: 'SwiftUI Application',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Control Center Module (11up)',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Framework',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Library',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Null',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Preference Bundle',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Preference Bundle Swift',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Theme',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Tool',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Tool Swift',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Tweak',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Tweak Swift',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Tweak & Simple Preferences',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'XPC Service Modern',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                ],
+                verticalButtons: true,
+              }).open();
+            });
+
+            listItem.appendChild(listInner);
+            listElement.appendChild(listItem);
+          });
+        };
+
+        $on('pageInit', () => {
+          renderList();  // Render the list when the page is initialized
+        });
+
+        return $render;
+      };
+    </script>
   </div>
 </template>
-
-<script>
-export default {
-  methods: {
-    openFilePicker() {
-      // Simulating file selection without using <input type="file">
-      const fileName = prompt('Enter the file name (must be a .zip file):');
-      
-      if (fileName && fileName.endsWith('.zip')) {
-        // Update the list item with the selected file name
-        document.getElementById('file-name').textContent = fileName;
-      } else if (fileName) {
-        alert('Please select a valid .zip file.');
-      }
-    }
-  }
-};
-</script>
-
-<style>
-/* Custom styles, if any, can go here */
-</style>

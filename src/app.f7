@@ -46,14 +46,14 @@
             <span class="tabbar-label">Home</span>
           </a>
           <a href="#view-catalog" class="tab-link">
-            <i class="icon f7-icons if-not-md">pencil</i>
+            <i class="icon f7-icons if-not-md">archivebox</i>
             <i class="icon material-icons if-md">pencil</i>
-            <span class="tabbar-label">Editor</span>
+            <span class="tabbar-label">Compiler</span>
           </a>
           <a href="#view-tweaks" class="tab-link">
-            <i class="icon f7-icons if-not-md">archivebox</i>
+            <i class="icon f7-icons if-not-md">book</i>
             <i class="icon material-icons if-md">archivebox</i>
-            <span class="tabbar-label">Compile</span>
+            <span class="tabbar-label">Guides</span>
           </a>
           <a href="#view-settings" class="tab-link">
             <i class="icon f7-icons if-not-md">gear</i>

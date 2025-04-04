@@ -4,7 +4,7 @@
       <div class="navbar-bg"></div>
       <div class="navbar-inner">
        
-        <div class="title sliding">Tweaks</div>
+        <div class="title sliding">Guides & Questions</div>
         <div class="right">
           <a class="link icon-only searchbar-enable" data-searchbar=".searchbar-demo">
             <i class="icon f7-icons if-not-md">search</i>
@@ -15,7 +15,7 @@
           class="searchbar searchbar-expandable searchbar-demo searchbar-init">
           <div class="searchbar-inner">
             <div class="searchbar-input-wrap">
-              <input type="search" placeholder="Search For Tweaks..." />
+              <input type="search" placeholder="Search For Guides/Questions..." />
               <i class="searchbar-icon"></i>
               <span class="input-clear-button"></span>
             </div>
@@ -35,204 +35,70 @@
         <ul>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Acura</div>
+              <div class="item-title">How to Create a Project?</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Audi</div>
+              <div class="item-title">How to unpackage Compiled Project?</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">BMW</div>
+              <div class="item-title">How to import Frameworks?</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Cadillac </div>
+              <div class="item-title">How to change SDK?</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Chevrolet </div>
+              <div class="item-title">What Device does this Compile on?</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Chrysler </div>
+              <div class="item-title">How do i make a Modmenu?</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Dodge </div>
+              <div class="item-title">How do i compile a project?</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Ferrari </div>
+              <div class="item-title">What is Theos and why is this App using it?</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Ford </div>
+              <div class="item-title">Why is this app so limited?</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">GMC </div>
+              <div class="item-title">Where can i suggest Features?</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Honda</div>
+              <div class="item-title">Offset Guide List (Not Related)</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Hummer</div>
+              <div class="item-title">H5GG Templates/Tutorials (Not Related)</div>
             </div>
           </li>
           <li class="item-content">
             <div class="item-inner">
-              <div class="item-title">Hyundai</div>
+              <div class="item-title">How do i find Decrypted Apps? (for Modding)</div>
             </div>
           </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Infiniti </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Isuzu </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Jaguar </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Jeep </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Kia</div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Lamborghini </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Land Rover</div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Lexus </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Lincoln </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Lotus </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Mazda</div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Mercedes-Benz</div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Mercury </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Mitsubishi</div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Nissan </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Oldsmobile </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Peugeot </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Pontiac </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Porsche</div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Regal</div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Saab </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Saturn </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Subaru </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Suzuki </div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Toyota</div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Volkswagen</div>
-            </div>
-          </li>
-          <li class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Volvo</div>
-            </div>
-          </li>
+         
         </ul>
       </div>
     </div>
