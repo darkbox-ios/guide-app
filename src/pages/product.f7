@@ -64,6 +64,36 @@
           renderList();  // Immediately re-render the list without refreshing
         };
 
+        // Initialize Project Picker
+        const initializeProject = () => {
+          $f7.picker.create({
+            inputEl: '#project-picker',
+            cols: [
+              {
+                textAlign: 'center',
+                values: [
+                  'Modern Application', 'Modern Swift Application', 'SwiftUI Application', 'Control Center Module (11up)', 
+                  'Framework', 'Library', 'Null', 'Preference Bundle', 'Swift Preference Bundle', 'Theme', 
+                  'Tool', 'Tool Swift', 'Tweak', 'Tweak Swift', 'Tweak & simple preferences', 'xpc service modern'
+                ]
+              }
+            ],
+            on: {
+              change: function(picker, values) {
+                const selectedProject = values[0];
+                openProjectPage(selectedProject);  // Open a page with the selected project
+              }
+            }
+          }).open();
+        };
+
+        // Open a new page with the selected project
+        const openProjectPage = (projectType) => {
+          // Assuming you have a page template for each project type
+          const newPageUrl = `/project/${projectType.toLowerCase().replace(/\s+/g, '-')}`;  // Customize this URL structure as needed
+          $f7.views.main.router.navigate(newPageUrl);
+        };
+
         // Render the list items dynamically
         const renderList = () => {
           const listElement = document.getElementById('dynamic-list');
@@ -83,6 +113,7 @@
             listTitle.textContent = item.title;
             listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
             listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
+            listTitle.addEventListener('click', initializeProject);  // Show the picker on item click
 
             listInner.appendChild(listTitle);
 
