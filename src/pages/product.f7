@@ -34,6 +34,8 @@
       export default (props, { $f7, $, $on, $onMounted, $update }) => {
         let isEditing = false;
         let listItems = JSON.parse(localStorage.getItem('listItems')) || [];
+        let chosenItemIndex = JSON.parse(localStorage.getItem('chosenItemIndex')) || null; // Track selected item
+        let chosenTemplate = JSON.parse(localStorage.getItem('chosenTemplate')) || null; // Track the template chosen
 
         // Toggle editing mode
         const toggleEditMode = () => {
@@ -70,11 +72,6 @@
           listElement.innerHTML = '';  // Clear the list before re-rendering
 
           listItems.forEach((item, index) => {
-            // Check if the project was chosen before
-            if (localStorage.getItem(item.title)) {
-              return; // Skip rendering if it was already chosen
-            }
-
             const listItem = document.createElement('li');
             listItem.classList.add('item-content');
             listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
@@ -101,13 +98,15 @@
               listInner.appendChild(deleteButton);
             }
 
-            // Add event listener to open a fullscreen popup with project details
+            // Add event listener to show the template selection dialog and save to localStorage
             listItem.addEventListener('click', () => {
-              // Save the chosen project to localStorage
-              localStorage.setItem(item.title, 'chosen');
-
-              // Open fullscreen popup for the selected project
-              openProjectPopup(item.title);
+              const isTemplateChosen = JSON.parse(localStorage.getItem('chosenTemplateForItem' + index));
+              if (isTemplateChosen) {
+                // If template was chosen previously, open the fullscreen modal directly
+                openFullscreenPopup(index);
+              } else {
+                openTemplateSelectionDialog(item, index);
+              }
             });
 
             listItem.appendChild(listInner);
@@ -115,56 +114,72 @@
           });
         };
 
-        // Function to open the fullscreen popup
-        const openProjectPopup = (projectName) => {
-          // Create the popup container
-          const popup = document.createElement('div');
-          popup.classList.add('popup');
-          popup.classList.add('popup-fullscreen');
-          
-          const popupContent = document.createElement('div');
-          popupContent.classList.add('view', 'view-main');
-
-          // Create navbar inside the popup
-          const navbar = document.createElement('div');
-          navbar.classList.add('navbar');
-          navbar.innerHTML = `
-            <div class="navbar-bg"></div>
-            <div class="navbar-inner sliding" style="display: flex; justify-content: space-between; align-items: center;">
-              <div class="title">${projectName}</div>
-              <a href="#" class="link icon-only" style="font-size: 20px;" onclick="closePopup()">
-                <i class="icon f7-icons">close</i>
-              </a>
-            </div>
-          `;
-
-          // Add content inside the popup (you can customize this content as needed)
-          const pageContent = document.createElement('div');
-          pageContent.classList.add('page-content');
-          pageContent.innerHTML = `<div class="block">Content for ${projectName}</div>`;
-
-          popupContent.appendChild(navbar);
-          popupContent.appendChild(pageContent);
-
-          popup.appendChild(popupContent);
-
-          // Append the popup to the body
-          document.body.appendChild(popup);
-
-          // Open the popup
-          $f7.popup.open(popup);
+        // Open the alert dialog with "Tweak" and "Application" buttons
+        const openTemplateSelectionDialog = (item, index) => {
+          // Open the alert dialog with the options
+          $f7.dialog.create({
+            title: 'Choose Template',
+            buttons: [
+              {
+                text: 'Tweak',
+                onClick: () => {
+                  console.log('Tweak button selected for item:', item.title);
+                  saveChosenTemplate('Tweak', index);
+                },
+              },
+              {
+                text: 'Application',
+                onClick: () => {
+                  console.log('Application button selected for item:', item.title);
+                  saveChosenTemplate('Application', index);
+                },
+              },
+            ],
+            verticalButtons: true,
+          }).open();
         };
 
-        // Function to close the popup
-        const closePopup = () => {
-          // Close the popup when the close button is clicked
-          const popup = document.querySelector('.popup');
-          if (popup) {
-            $f7.popup.close(popup);
-            popup.remove(); // Remove popup from DOM after closing
+        // Save the chosen template and item index to localStorage
+        const saveChosenTemplate = (template, index) => {
+          localStorage.setItem('chosenTemplate', JSON.stringify(template));
+          localStorage.setItem('chosenItemIndex', JSON.stringify(index));
+          localStorage.setItem('chosenTemplateForItem' + index, JSON.stringify(true)); // Mark that this item has a template
+          openFullscreenPopup(index); // Automatically open the fullscreen popup after selection
+        };
+
+        // Open fullscreen popup based on template choice
+        const openFullscreenPopup = (index) => {
+          const template = JSON.parse(localStorage.getItem('chosenTemplate'));
+          const item = listItems[index];
+          
+          // Create and open fullscreen popup based on the template
+          let popupContent = '';
+          if (template === 'Tweak') {
+            popupContent = `<div class="popup-inner"><div class="block"><h1>Tweak Template for ${item.title}</h1><p>Content for the Tweak template...</p></div></div>`;
+          } else if (template === 'Application') {
+            popupContent = `<div class="popup-inner"><div class="block"><h1>Application Template for ${item.title}</h1><p>Content for the Application template...</p></div></div>`;
+          }
+
+          $f7.popup.create({
+            content: popupContent,
+            on: {
+              open: () => {
+                console.log('Fullscreen popup opened for', item.title, 'with', template, 'template');
+              },
+            },
+          }).open();
+        };
+
+        // Check if a template was previously chosen, if so, open it again
+        const openPreviouslyChosenTemplate = () => {
+          if (chosenItemIndex !== null && chosenTemplate !== null && listItems[chosenItemIndex]) {
+            const item = listItems[chosenItemIndex];
+            console.log(`Previously chosen template for ${item.title}: ${chosenTemplate}`);
+            openFullscreenPopup(chosenItemIndex);
           }
         };
 
+        // Run the previous template check when the page is loaded
         $on('pageInit', () => {
           renderList();  // Render the list when the page is initialized
         });
