@@ -6,11 +6,11 @@
         <div class="title">File Editor</div>
         <div class="right">
           <!-- Pencil Icon for Editing Mode -->
-          <a href="#" class="link icon-only" @click=${() => toggleEditMode()} style="font-size: 20px;">
+          <a href="#" class="link icon-only" @click="toggleEditMode" style="font-size: 20px;">
             <i class="icon f7-icons">pencil</i>
           </a>
           <!-- Plus Icon for Adding New Item -->
-          <a href="#" class="link icon-only" @click=${() => showPrompt()} style="font-size: 20px;">
+          <a href="#" class="link icon-only" @click="showPrompt" style="font-size: 20px;">
             <i class="icon f7-icons">plus</i>
           </a>
         </div>
@@ -31,113 +31,114 @@
     </div>
 
     <script>
-      export default (props, { $f7, $, $on, $onMounted, $update }) => {
-        let isEditing = false;
-        let listItems = JSON.parse(localStorage.getItem('listItems')) || [];
-
-        // List of templates
-        const templates = [
-          "Modern Application", "Modern Swift Application", "SwiftUI Application", "Control Center Module (11up)",
-          "Framework", "Library", "Null", "Preference Bundle", "Swift Preference Bundle", "Theme", "Tool", 
-          "Tool Swift", "Tweak", "Tweak Swift", "Tweak & simple preferences", "xpc service modern"
-        ];
-
-        // Toggle editing mode
-        const toggleEditMode = () => {
-          isEditing = !isEditing;
-          renderList();  // Re-render the list to show or hide delete buttons
-        };
-
-        // Show the prompt to add a new item
-        const showPrompt = () => {
-          $f7.dialog.prompt('Enter the title for the new item:', '', (value) => {
-            if (value) {
-              addItem(value);
-            }
-          });
-        };
-
-        // Add a new item to the list
-        const addItem = (title) => {
-          const newItem = { title, template: null };  // Include a template field initially null
-          listItems.push(newItem);
-          localStorage.setItem('listItems', JSON.stringify(listItems));
-          renderList();  // Immediately re-render the list without refreshing
-        };
-
-        // Delete an item from the list
-        const deleteItem = (index) => {
-          listItems.splice(index, 1);
-          localStorage.setItem('listItems', JSON.stringify(listItems));
-          renderList();  // Immediately re-render the list without refreshing
-        };
-
-        // Show dialog to choose template when project item is clicked
-        const chooseTemplate = (index) => {
-          $f7.dialog.action({
-            title: 'Choose template',
-            buttons: templates.map(template => ({
-              text: template,
-              onClick: () => {
-                listItems[index].template = template;
-                localStorage.setItem('listItems', JSON.stringify(listItems));
-                renderList();
+      export default {
+        data() {
+          return {
+            isEditing: false,
+            listItems: JSON.parse(localStorage.getItem('listItems')) || [],
+            templates: [
+              "Modern Application", "Modern Swift Application", "SwiftUI Application", "Control Center Module (11up)",
+              "Framework", "Library", "Null", "Preference Bundle", "Swift Preference Bundle", "Theme", "Tool", 
+              "Tool Swift", "Tweak", "Tweak Swift", "Tweak & simple preferences", "xpc service modern"
+            ]
+          };
+        },
+        methods: {
+          // Toggle editing mode
+          toggleEditMode() {
+            this.isEditing = !this.isEditing;
+            this.renderList(); // Re-render the list to show or hide delete buttons
+          },
+          
+          // Show the prompt to add a new item
+          showPrompt() {
+            this.$f7.dialog.prompt('Enter the title for the new item:', '', (value) => {
+              if (value) {
+                this.addItem(value);
               }
-            }))
-          });
-        };
+            });
+          },
 
-        // Render the list items dynamically
-        const renderList = () => {
-          const listElement = document.getElementById('dynamic-list');
-          listElement.innerHTML = '';  // Clear the list before re-rendering
+          // Add a new item to the list
+          addItem(title) {
+            const newItem = { title, template: null }; // Include a template field initially null
+            this.listItems.push(newItem);
+            localStorage.setItem('listItems', JSON.stringify(this.listItems));
+            this.renderList(); // Immediately re-render the list without refreshing
+          },
 
-          listItems.forEach((item, index) => {
-            const listItem = document.createElement('li');
-            listItem.classList.add('item-content');
-            listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
-            listItem.style.margin = '4px 0';      // Reduce margin to make it more compact
+          // Delete an item from the list
+          deleteItem(index) {
+            this.listItems.splice(index, 1);
+            localStorage.setItem('listItems', JSON.stringify(this.listItems));
+            this.renderList(); // Immediately re-render the list without refreshing
+          },
 
-            const listInner = document.createElement('div');
-            listInner.classList.add('item-inner');
+          // Show dialog to choose template when project item is clicked
+          chooseTemplate(index) {
+            this.$f7.dialog.action({
+              title: 'Choose template',
+              buttons: this.templates.map(template => ({
+                text: template,
+                onClick: () => {
+                  this.listItems[index].template = template;
+                  localStorage.setItem('listItems', JSON.stringify(this.listItems));
+                  this.renderList();
+                }
+              }))
+            });
+          },
 
-            const listTitle = document.createElement('div');
-            listTitle.classList.add('item-title');
-            listTitle.textContent = item.title;
-            listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
-            listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
-            listTitle.addEventListener('click', () => chooseTemplate(index));  // On click, show template choice dialog
+          // Render the list items dynamically
+          renderList() {
+            const listElement = document.getElementById('dynamic-list');
+            listElement.innerHTML = ''; // Clear the list before re-rendering
 
-            listInner.appendChild(listTitle);
+            this.listItems.forEach((item, index) => {
+              const listItem = document.createElement('li');
+              listItem.classList.add('item-content');
+              listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
+              listItem.style.margin = '4px 0';      // Reduce margin to make it more compact
 
-            // Display template if it's chosen
-            if (item.template) {
-              const templateLabel = document.createElement('div');
-              templateLabel.classList.add('item-after');
-              templateLabel.textContent = `Template: ${item.template}`;
-              listInner.appendChild(templateLabel);
-            }
+              const listInner = document.createElement('div');
+              listInner.classList.add('item-inner');
 
-            if (isEditing) {
-              const deleteButton = document.createElement('a');
-              deleteButton.href = '#';
-              deleteButton.classList.add('link', 'icon-only');
-              deleteButton.innerHTML = '<i class="icon f7-icons">trash</i>';
-              deleteButton.addEventListener('click', () => deleteItem(index));
-              deleteButton.style.fontSize = '20px'; // Optional: Adjust the delete icon size
-              listInner.appendChild(deleteButton);
-            }
+              const listTitle = document.createElement('div');
+              listTitle.classList.add('item-title');
+              listTitle.textContent = item.title;
+              listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
+              listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
+              listTitle.addEventListener('click', () => this.chooseTemplate(index));  // On click, show template choice dialog
 
-            listItem.appendChild(listInner);
-            listElement.appendChild(listItem);
-          });
-        };
+              listInner.appendChild(listTitle);
 
-        $on('pageInit', () => {
-          renderList();  // Render the list when the page is initialized
-        });
+              // Display template if it's chosen
+              if (item.template) {
+                const templateLabel = document.createElement('div');
+                templateLabel.classList.add('item-after');
+                templateLabel.textContent = `Template: ${item.template}`;
+                listInner.appendChild(templateLabel);
+              }
 
-        return $render;
+              if (this.isEditing) {
+                const deleteButton = document.createElement('a');
+                deleteButton.href = '#';
+                deleteButton.classList.add('link', 'icon-only');
+                deleteButton.innerHTML = '<i class="icon f7-icons">trash</i>';
+                deleteButton.addEventListener('click', () => this.deleteItem(index));
+                deleteButton.style.fontSize = '20px'; // Optional: Adjust the delete icon size
+                listInner.appendChild(deleteButton);
+              }
+
+              listItem.appendChild(listInner);
+              listElement.appendChild(listItem);
+            });
+          }
+        },
+
+        mounted() {
+          this.renderList();  // Render the list when the page is initialized
+        }
       };
     </script>
   </div>
