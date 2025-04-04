@@ -29,106 +29,129 @@
         </div>
       </div>
     </div>
-  </div>
-</template>
 
-<script>
-  export default (props, { $f7, $, $on, $onMounted, $update }) => {
-    let isEditing = false;
-    let listItems = JSON.parse(localStorage.getItem('listItems')) || [];
+    <script>
+      export default (props, { $f7, $, $on, $onMounted, $update }) => {
+        let isEditing = false;
+        let listItems = JSON.parse(localStorage.getItem('listItems')) || [];
 
-    // Get selected projects from localStorage to avoid showing them again
-    const selectedProjects = JSON.parse(localStorage.getItem('selectedProjects')) || [];
+        // Toggle editing mode
+        const toggleEditMode = () => {
+          isEditing = !isEditing;
+          renderList();  // Re-render the list to show or hide delete buttons
+        };
 
-    // Toggle editing mode
-    const toggleEditMode = () => {
-      isEditing = !isEditing;
-      renderList();  // Re-render the list to show or hide delete buttons
-    };
+        // Show the prompt to add a new item
+        const showPrompt = () => {
+          $f7.dialog.prompt('Enter the title for the new item:', '', (value) => {
+            if (value) {
+              addItem(value);
+            }
+          });
+        };
 
-    // Show the prompt to add a new item
-    const showPrompt = () => {
-      $f7.dialog.prompt('Enter the title for the new item:', '', (value) => {
-        if (value) {
-          addItem(value);
-        }
-      });
-    };
+        // Add a new item to the list
+        const addItem = (title) => {
+          listItems.push({ title });
+          localStorage.setItem('listItems', JSON.stringify(listItems));
+          renderList();  // Immediately re-render the list without refreshing
+        };
 
-    // Add a new item to the list
-    const addItem = (title) => {
-      listItems.push({ title });
-      localStorage.setItem('listItems', JSON.stringify(listItems));
-      renderList();  // Immediately re-render the list without refreshing
-    };
+        // Delete an item from the list
+        const deleteItem = (index) => {
+          listItems.splice(index, 1);
+          localStorage.setItem('listItems', JSON.stringify(listItems));
+          renderList();  // Immediately re-render the list without refreshing
+        };
 
-    // Delete an item from the list
-    const deleteItem = (index) => {
-      listItems.splice(index, 1);
-      localStorage.setItem('listItems', JSON.stringify(listItems));
-      renderList();  // Immediately re-render the list without refreshing
-    };
+        // Render the list items dynamically
+        const renderList = () => {
+          const listElement = document.getElementById('dynamic-list');
+          listElement.innerHTML = '';  // Clear the list before re-rendering
 
-    // Mark a project as selected and store in localStorage
-    const markAsSelected = (projectName) => {
-      selectedProjects.push(projectName);
-      localStorage.setItem('selectedProjects', JSON.stringify(selectedProjects));
-      navigateToProjectPage(projectName);
-    };
+          listItems.forEach((item, index) => {
+            // Check if the project was chosen before
+            if (localStorage.getItem(item.title)) {
+              return; // Skip rendering if it was already chosen
+            }
 
-    // Navigate to the project page
-    const navigateToProjectPage = (projectName) => {
-      $f7.views.main.router.navigate(`/project/${projectName}/`);
-    };
+            const listItem = document.createElement('li');
+            listItem.classList.add('item-content');
+            listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
+            listItem.style.margin = '4px 0';      // Reduce margin to make it more compact
 
-    // Render the list items dynamically
-    const renderList = () => {
-      const listElement = document.getElementById('dynamic-list');
-      listElement.innerHTML = '';  // Clear the list before re-rendering
+            const listInner = document.createElement('div');
+            listInner.classList.add('item-inner');
 
-      listItems.forEach((item, index) => {
-        if (selectedProjects.includes(item.title)) return; // Skip projects that have been selected
+            const listTitle = document.createElement('div');
+            listTitle.classList.add('item-title');
+            listTitle.textContent = item.title;
+            listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
+            listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
 
-        const listItem = document.createElement('li');
-        listItem.classList.add('item-content');
-        listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
-        listItem.style.margin = '4px 0';      // Reduce margin to make it more compact
+            listInner.appendChild(listTitle);
 
-        const listInner = document.createElement('div');
-        listInner.classList.add('item-inner');
+            if (isEditing) {
+              const deleteButton = document.createElement('a');
+              deleteButton.href = '#';
+              deleteButton.classList.add('link', 'icon-only');
+              deleteButton.innerHTML = '<i class="icon f7-icons">trash</i>';
+              deleteButton.addEventListener('click', () => deleteItem(index));
+              deleteButton.style.fontSize = '20px'; // Optional: Adjust the delete icon size
+              listInner.appendChild(deleteButton);
+            }
 
-        const listTitle = document.createElement('div');
-        listTitle.classList.add('item-title');
-        listTitle.textContent = item.title;
-        listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
-        listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
+            // Add event listener to select project
+            listItem.addEventListener('click', () => {
+              // Save the chosen project to localStorage
+              localStorage.setItem(item.title, 'chosen');
 
-        listInner.appendChild(listTitle);
+              // Create and open the new page dynamically
+              createNewProjectPage(item.title);
+            });
 
-        if (isEditing) {
-          const deleteButton = document.createElement('a');
-          deleteButton.href = '#';
-          deleteButton.classList.add('link', 'icon-only');
-          deleteButton.innerHTML = '<i class="icon f7-icons">trash</i>';
-          deleteButton.addEventListener('click', () => deleteItem(index));
-          deleteButton.style.fontSize = '20px'; // Optional: Adjust the delete icon size
-          listInner.appendChild(deleteButton);
-        }
+            listItem.appendChild(listInner);
+            listElement.appendChild(listItem);
+          });
+        };
 
-        // Add event listener to select the project and navigate to the project page
-        listItem.addEventListener('click', () => {
-          markAsSelected(item.title);  // Mark the project as selected
+        // Function to create a new project page dynamically
+        const createNewProjectPage = (projectName) => {
+          // Dynamically create a new Framework7 page
+          const newPage = document.createElement('div');
+          newPage.classList.add('page');
+          newPage.dataset.name = 'project-detail';
+
+          // Create the navbar with project name
+          const navbar = document.createElement('div');
+          navbar.classList.add('navbar');
+          navbar.innerHTML = `
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner sliding" style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="title">${projectName}</div>
+            </div>
+          `;
+          newPage.appendChild(navbar);
+
+          // Create the page content (empty for now)
+          const pageContent = document.createElement('div');
+          pageContent.classList.add('page-content');
+          pageContent.innerHTML = `<div class="block">Content for ${projectName}</div>`;
+          newPage.appendChild(pageContent);
+
+          // Append the newly created page to the DOM
+          document.body.appendChild(newPage);
+
+          // Now navigate to this new page
+          $f7.views.main.router.navigate(`/project-detail/`);
+        };
+
+        $on('pageInit', () => {
+          renderList();  // Render the list when the page is initialized
         });
 
-        listItem.appendChild(listInner);
-        listElement.appendChild(listItem);
-      });
-    };
-
-    $on('pageInit', () => {
-      renderList();  // Render the list when the page is initialized
-    });
-
-    return $render;
-  };
-</script>
+        return $render;
+      };
+    </script>
+  </div>
+</template>
