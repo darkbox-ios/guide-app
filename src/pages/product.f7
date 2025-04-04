@@ -1,254 +1,81 @@
 <template>
-  <div class="page" data-name="file-editor">
+  <div class="page">
+    <!-- Topbar -->
     <div class="navbar">
-      <div class="navbar-bg"></div>
-      <div class="navbar-inner sliding" style="display: flex; justify-content: space-between; align-items: center;">
-        <div class="title">File Editor</div>
-        <div class="right">
-          <!-- Pencil Icon for Editing Mode -->
-          <a href="#" class="link icon-only" @click=${() => toggleEditMode()} style="font-size: 20px;">
-            <i class="icon f7-icons">pencil</i>
+      <div class="navbar-inner">
+        <div class="left">
+          <a href="#" class="link icon-only">
+            <i class="icon-bars"></i>
           </a>
-          <!-- Plus Icon for Popover -->
-          <a href="#" class="link icon-only" @click=${() => openPopover()} style="font-size: 20px;">
+        </div>
+        <div class="title">Tweak Compiler</div>
+        <div class="right">
+          <a href="#" class="link icon-only" @click="openFilePicker">
             <i class="icon f7-icons">plus</i>
           </a>
         </div>
       </div>
     </div>
-
-    <div class="page-content">
-      <div class="block-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 600;">My Files</div>
-      
-      <div class="block block-strong inset" style="padding: 0;">
-        <!-- The list will be rendered dynamically here -->
-        <div class="list inset list-strong list-dividers-ios" style="padding: 0; margin: 0;">
-          <ul id="dynamic-list" style="padding: 0; margin: 0;">
-            <!-- Items will be injected here dynamically -->
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Popover for options -->
-    <div class="popover popover-left" id="popover-options">
-      <div class="list">
+    
+    <!-- Content Block -->
+    <div class="block">
+      <div class="list inset">
+        <!-- Dynamically show the imported file's name -->
         <ul>
-          <li>
-            <a href="#" class="item-link list-button" @click=${() => importFile()}>Import File (Photos, Files, Camera)</a>
-          </li>
-          <li>
-            <a href="#" class="item-link list-button" @click=${() => createFile()}>Create File</a>
-          </li>
-          <li>
-            <a href="#" class="item-link list-button" @click=${() => createFolder()}>Create Folder</a>
-          </li>
-          <li>
-            <a href="#" class="item-link list-button" @click=${() => exportProject()}>Export Project</a>
+          <li v-if="fileName" class="item-content">
+            <div class="item-inner">
+              <div class="item-title">{{ fileName }}</div>
+            </div>
           </li>
         </ul>
       </div>
-    </div>
-
-    <!-- Folder Popover for creating files and folders inside -->
-    <div class="popover popover-left" id="folder-popover">
-      <div class="list">
-        <ul>
-          <li>
-            <a href="#" class="item-link list-button" @click=${() => createFileInside()}>Create File</a>
-          </li>
-          <li>
-            <a href="#" class="item-link list-button" @click=${() => importFileInside()}>Import File</a>
-          </li>
-          <li>
-            <a href="#" class="item-link list-button" @click=${() => createFolderInside()}>Create Folder</a>
-          </li>
-        </ul>
+      <!-- Compile Button -->
+      <div v-if="fileName">
+        <a href="#" class="button button-large button-fill color-accent" @click="compile">Compile</a>
       </div>
     </div>
 
-    <script>
-      export default (props, { $f7, $, $on, $onMounted, $update }) => {
-        let isEditing = false;
-        let files = JSON.parse(localStorage.getItem('files')) || [];
-
-        // Toggle editing mode
-        const toggleEditMode = () => {
-          isEditing = !isEditing;
-          renderList();  // Re-render the list to show or hide delete buttons
-        };
-
-        // Open the popover with options
-        const openPopover = () => {
-          $f7.popover.open('#popover-options');
-        };
-
-        // Import file handler
-        const importFile = () => {
-          $f7.dialog.prompt('Enter file path or import options for file:', '', (value) => {
-            if (value) {
-              addFile(value, 'file');
-            }
-          });
-          $f7.popover.close(); // Close popover
-        };
-
-        // Create file handler
-        const createFile = () => {
-          $f7.dialog.prompt('Enter the name for the new file (e.g., main.cpp):', '', (value) => {
-            if (value) {
-              addFile(value, 'file');
-            }
-          });
-          $f7.popover.close(); // Close popover
-        };
-
-        // Create folder handler
-        const createFolder = () => {
-          $f7.dialog.prompt('Enter folder name:', '', (value) => {
-            if (value) {
-              addFile(value, 'folder');
-            }
-          });
-          $f7.popover.close(); // Close popover
-        };
-
-        // Export project handler
-        const exportProject = () => {
-          console.log('Export project functionality goes here.');
-          $f7.popover.close(); // Close popover
-        };
-
-        // Add a new file or folder to the list
-        const addFile = (name, type, parentIndex = null) => {
-          const newFile = { name, type, children: [] };
-          if (parentIndex !== null) {
-            files[parentIndex].children.push(newFile);
-          } else {
-            files.push(newFile);
-          }
-          localStorage.setItem('files', JSON.stringify(files));
-          renderList();  // Immediately re-render the list without refreshing
-        };
-
-        // Delete a file or folder from the list
-        const deleteItem = (index) => {
-          files.splice(index, 1);
-          localStorage.setItem('files', JSON.stringify(files));
-          renderList();  // Immediately re-render the list without refreshing
-        };
-
-        // Render the list items dynamically
-        const renderList = () => {
-          const listElement = document.getElementById('dynamic-list');
-          listElement.innerHTML = '';  // Clear the list before re-rendering
-
-          files.forEach((item, index) => {
-            const listItem = document.createElement('li');
-            listItem.classList.add('item-content');
-            listItem.style.padding = '8px 16px';
-            listItem.style.margin = '4px 0';
-
-            const listInner = document.createElement('div');
-            listInner.classList.add('item-inner');
-            listInner.style.display = 'flex';
-            listInner.style.alignItems = 'center';
-
-            const listIcon = document.createElement('i');
-            listIcon.classList.add('icon', 'f7-icons');
-            listIcon.innerHTML = item.type === 'folder' ? 'folder' : 'document';
-            listIcon.style.marginRight = '10px';
-
-            const listTitle = document.createElement('div');
-            listTitle.classList.add('item-title');
-            listTitle.textContent = item.name;
-            listTitle.style.fontSize = '14px';
-            listTitle.style.lineHeight = '1.5';
-
-            listInner.appendChild(listIcon);
-            listInner.appendChild(listTitle);
-
-            if (item.type === 'folder') {
-              // Special folder icon to trigger folder popover
-              const folderPopoverIcon = document.createElement('a');
-              folderPopoverIcon.href = '#';
-              folderPopoverIcon.classList.add('link', 'icon-only');
-              folderPopoverIcon.innerHTML = '<i class="icon f7-icons">ellipsis_vertical</i>';
-              folderPopoverIcon.style.fontSize = '16px';
-              folderPopoverIcon.addEventListener('click', (e) => {
-                e.stopPropagation();
-                $f7.popover.open('#folder-popover');
-              });
-              listInner.appendChild(folderPopoverIcon);
-            }
-
-            if (isEditing) {
-              const deleteButton = document.createElement('a');
-              deleteButton.href = '#';
-              deleteButton.classList.add('link', 'icon-only');
-              deleteButton.innerHTML = '<i class="icon f7-icons">trash</i>';
-              deleteButton.addEventListener('click', () => deleteItem(index));
-              deleteButton.style.fontSize = '20px';
-              listInner.appendChild(deleteButton);
-            }
-
-            // Add click event to open file/folder details
-            listItem.addEventListener('click', () => {
-              if (item.type === 'folder') {
-                // Handle folder click (e.g., toggle folder contents)
-              } else {
-                $f7.dialog.create({
-                  title: 'File Options',
-                  buttons: [
-                    { text: 'Edit', onClick: () => console.log('Edit clicked') },
-                    { text: 'Delete', onClick: () => deleteItem(index) }
-                  ],
-                  verticalButtons: true
-                }).open();
-              }
-            });
-
-            listItem.appendChild(listInner);
-            listElement.appendChild(listItem);
-          });
-        };
-
-        // Create file inside folder
-        const createFileInside = () => {
-          $f7.dialog.prompt('Enter the name for the new file (e.g., main.cpp):', '', (value) => {
-            if (value) {
-              addFile(value, 'file', 0); // Assuming the folder index is passed
-            }
-          });
-          $f7.popover.close(); // Close popover
-        };
-
-        // Import file inside folder
-        const importFileInside = () => {
-          $f7.dialog.prompt('Enter file path or import options for file:', '', (value) => {
-            if (value) {
-              addFile(value, 'file', 0); // Assuming the folder index is passed
-            }
-          });
-          $f7.popover.close(); // Close popover
-        };
-
-        // Create folder inside folder
-        const createFolderInside = () => {
-          $f7.dialog.prompt('Enter folder name:', '', (value) => {
-            if (value) {
-              addFile(value, 'folder', 0); // Assuming the folder index is passed
-            }
-          });
-          $f7.popover.close(); // Close popover
-        };
-
-        $on('pageInit', () => {
-          renderList();  // Render the list when the page is initialized
-        });
-
-        return $render;
-      };
-    </script>
+    <!-- Hidden File Input -->
+    <input type="file" ref="fileInput" style="display:none" accept=".zip" @change="onFileChange" />
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      fileName: "",  // To store the name of the imported zip file
+    };
+  },
+  methods: {
+    // Open the file picker
+    openFilePicker() {
+      this.$refs.fileInput.click();
+    },
+    
+    // Handle the file selection
+    onFileChange(event) {
+      const file = event.target.files[0];
+      
+      if (file && file.name.endsWith('.zip')) {
+        // Extract the file name without the .zip extension
+        this.fileName = file.name.replace(/\.zip$/, '');
+      } else {
+        // Handle invalid file type
+        this.$f7.dialog.alert('Please select a .zip file.');
+      }
+    },
+    
+    // Handle the compile button click
+    compile() {
+      this.$f7.dialog.alert(`Compiling the file: ${this.fileName}.zip`);
+    }
+  }
+};
+</script>
+
+<style scoped>
+.button-compile {
+  background-color: var(--f7-button-accent-color);
+}
+</style>
