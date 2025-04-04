@@ -1,24 +1,75 @@
 <template>
   <div class="page">
-    <!-- Navbar with a background -->
+    <!-- Navbar with a background and the Plus icon -->
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner">
         <div class="title sliding">Compile</div>
+        <!-- Right side with Plus icon -->
+        <div class="right">
+          <a class="link icon-only" @click="openFilePicker">
+            <i class="icon f7-icons">plus</i>
+          </a>
+        </div>
       </div>
     </div>
 
-    <!-- Page content -->
+    <!-- Page Content -->
     <div class="page-content">
-      <p>Welcome to the Compile page!</p>
+      <!-- Inset Grouped List Item -->
+      <div class="list inset">
+        <ul>
+          <li class="item-content">
+            <div class="item-inner">
+              <!-- Left section with the folder icon -->
+              <div class="item-title">
+                <i class="f7-icons">folder</i> <span id="file-name">No file selected</span>
+              </div>
+            </div>
+          </li>
+          <!-- Compile Button -->
+          <li>
+            <a href="#" class="button button-fill color-accent w-100">Compile</a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-  export default () => {
-    return $render;
-  };
+export default {
+  methods: {
+    openFilePicker() {
+      // Create a file input element dynamically
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = '.zip';  // Only accept .zip files
+
+      fileInput.onchange = (event) => {
+        const file = event.target.files[0]; // Get the selected file
+        if (file) {
+          // Update the list item with the selected file name
+          const fileName = file.name;
+          document.getElementById('file-name').textContent = fileName;
+        }
+      };
+
+      // Trigger the file picker
+      fileInput.click();
+    }
+  }
+};
 </script>
 
+<style>
+/* Custom navbar background and title styling */
 
+
+/* Style for the Compile button */
+.button.color-accent {
+  background-color: var(--f7-color-accent); /* Use the Framework7 accent color */
+}
+
+
+</style>
