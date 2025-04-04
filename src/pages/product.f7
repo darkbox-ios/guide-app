@@ -65,7 +65,7 @@
             listTitle.textContent = item.title;
             listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
             listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
-            listTitle.addEventListener('click', () => showProjectPicker());  // Show the picker on item click
+            listTitle.addEventListener('click', () => showProjectDialog());  // Show the dialog on item click
 
             listInner.appendChild(listTitle);
 
@@ -74,32 +74,27 @@
           });
         };
 
-        // Initialize Project Picker
-        const showProjectPicker = () => {
-          $f7.picker.create({
-            inputEl: '#project-picker',
-            cols: [
-              {
-                textAlign: 'center',
-                values: [
-                  'Modern Application', 'Modern Swift Application', 'SwiftUI Application', 'Control Center Module (11up)', 
-                  'Framework', 'Library', 'Null', 'Preference Bundle', 'Swift Preference Bundle', 'Theme', 
-                  'Tool', 'Tool Swift', 'Tweak', 'Tweak Swift', 'Tweak & simple preferences', 'xpc service modern'
-                ]
-              }
-            ],
-            on: {
-              change: function(picker, values) {
-                const selectedProject = values[0];
-                openProjectPage(selectedProject);  // Open a page with the selected project
-              }
+        // Show the dialog to choose a project template
+        const showProjectDialog = () => {
+          $f7.dialog.alert(
+            'Choose a template for your project:', 
+            'Project Templates',
+            () => {
+              // Show the alert with the template options
+              $f7.dialog.prompt('Choose a project type:', '', (value) => {
+                if (value) {
+                  openProjectPage(value);  // Open the page for the selected project type
+                }
+              });
             }
-          }).open();
+          );
         };
 
-        // Open a new page with the selected project
+        // Open the new page with the selected project type
         const openProjectPage = (projectType) => {
-          $f7.views.main.router.navigate(`/project/${projectType.toLowerCase().replace(/\s+/g, '-')}`);  // Redirect to a new page
+          // Format the project name to create a new route (e.g., "Modern Application" -> "modern-application")
+          const projectPage = projectType.toLowerCase().replace(/\s+/g, '-');
+          $f7.views.main.router.navigate(`/project/${projectPage}`);  // Redirect to the new page
         };
 
         // Render the list when the page is initialized
