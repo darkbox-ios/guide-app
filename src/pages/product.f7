@@ -1,5 +1,5 @@
 <template>
-  <div class="page" data-name="product">
+  <div class="page" data-name="file-editor">
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding" style="display: flex; justify-content: space-between; align-items: center;">
@@ -45,6 +45,23 @@
           </li>
           <li>
             <a href="#" class="item-link list-button" @click=${() => exportProject()}>Export Project</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Folder Popover for creating files and folders inside -->
+    <div class="popover popover-left" id="folder-popover">
+      <div class="list">
+        <ul>
+          <li>
+            <a href="#" class="item-link list-button" @click=${() => createFileInside()}>Create File</a>
+          </li>
+          <li>
+            <a href="#" class="item-link list-button" @click=${() => importFileInside()}>Import File</a>
+          </li>
+          <li>
+            <a href="#" class="item-link list-button" @click=${() => createFolderInside()}>Create Folder</a>
           </li>
         </ul>
       </div>
@@ -103,8 +120,13 @@
         };
 
         // Add a new file or folder to the list
-        const addFile = (name, type) => {
-          files.push({ name, type, children: [] });
+        const addFile = (name, type, parentIndex = null) => {
+          const newFile = { name, type, children: [] };
+          if (parentIndex !== null) {
+            files[parentIndex].children.push(newFile);
+          } else {
+            files.push(newFile);
+          }
           localStorage.setItem('files', JSON.stringify(files));
           renderList();  // Immediately re-render the list without refreshing
         };
@@ -129,6 +151,8 @@
 
             const listInner = document.createElement('div');
             listInner.classList.add('item-inner');
+            listInner.style.display = 'flex';
+            listInner.style.alignItems = 'center';
 
             const listIcon = document.createElement('i');
             listIcon.classList.add('icon', 'f7-icons');
@@ -144,6 +168,20 @@
             listInner.appendChild(listIcon);
             listInner.appendChild(listTitle);
 
+            if (item.type === 'folder') {
+              // Special folder icon to trigger folder popover
+              const folderPopoverIcon = document.createElement('a');
+              folderPopoverIcon.href = '#';
+              folderPopoverIcon.classList.add('link', 'icon-only');
+              folderPopoverIcon.innerHTML = '<i class="icon f7-icons">ellipsis_vertical</i>';
+              folderPopoverIcon.style.fontSize = '16px';
+              folderPopoverIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                $f7.popover.open('#folder-popover');
+              });
+              listInner.appendChild(folderPopoverIcon);
+            }
+
             if (isEditing) {
               const deleteButton = document.createElement('a');
               deleteButton.href = '#';
@@ -157,7 +195,7 @@
             // Add click event to open file/folder details
             listItem.addEventListener('click', () => {
               if (item.type === 'folder') {
-                // Handle folder click (for future enhancements)
+                // Handle folder click (e.g., toggle folder contents)
               } else {
                 $f7.dialog.create({
                   title: 'File Options',
@@ -173,6 +211,36 @@
             listItem.appendChild(listInner);
             listElement.appendChild(listItem);
           });
+        };
+
+        // Create file inside folder
+        const createFileInside = () => {
+          $f7.dialog.prompt('Enter the name for the new file (e.g., main.cpp):', '', (value) => {
+            if (value) {
+              addFile(value, 'file', 0); // Assuming the folder index is passed
+            }
+          });
+          $f7.popover.close(); // Close popover
+        };
+
+        // Import file inside folder
+        const importFileInside = () => {
+          $f7.dialog.prompt('Enter file path or import options for file:', '', (value) => {
+            if (value) {
+              addFile(value, 'file', 0); // Assuming the folder index is passed
+            }
+          });
+          $f7.popover.close(); // Close popover
+        };
+
+        // Create folder inside folder
+        const createFolderInside = () => {
+          $f7.dialog.prompt('Enter folder name:', '', (value) => {
+            if (value) {
+              addFile(value, 'folder', 0); // Assuming the folder index is passed
+            }
+          });
+          $f7.popover.close(); // Close popover
         };
 
         $on('pageInit', () => {
