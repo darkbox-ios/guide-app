@@ -9,8 +9,8 @@
           <a href="#" class="link icon-only" @click=${() => toggleEditMode()} style="font-size: 20px;">
             <i class="icon f7-icons">pencil</i>
           </a>
-          <!-- Plus Icon for Adding New Item -->
-          <a href="#" class="link icon-only" @click=${() => showPrompt()} style="font-size: 20px;">
+          <!-- Plus Icon for Popover -->
+          <a href="#" class="link icon-only" @click=${() => openPopover()} style="font-size: 20px;">
             <i class="icon f7-icons">plus</i>
           </a>
         </div>
@@ -18,24 +18,42 @@
     </div>
 
     <div class="page-content">
-      <div class="block-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 600;">My Projects</div>
+      <div class="block-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 600;">My Files</div>
       
       <div class="block block-strong inset" style="padding: 0;">
         <!-- The list will be rendered dynamically here -->
         <div class="list inset list-strong list-dividers-ios" style="padding: 0; margin: 0;">
-          <ul id="dynamic-list" style="padding: 0; margin: 0; width: 100%;">
+          <ul id="dynamic-list" style="padding: 0; margin: 0;">
             <!-- Items will be injected here dynamically -->
           </ul>
         </div>
       </div>
     </div>
 
+    <!-- Popover for options -->
+    <div class="popover popover-left" id="popover-options">
+      <div class="list">
+        <ul>
+          <li>
+            <a href="#" class="item-link list-button" @click=${() => importFile()}>Import File (Photos, Files, Camera)</a>
+          </li>
+          <li>
+            <a href="#" class="item-link list-button" @click=${() => createFile()}>Create File</a>
+          </li>
+          <li>
+            <a href="#" class="item-link list-button" @click=${() => createFolder()}>Create Folder</a>
+          </li>
+          <li>
+            <a href="#" class="item-link list-button" @click=${() => exportProject()}>Export Project</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
     <script>
       export default (props, { $f7, $, $on, $onMounted, $update }) => {
         let isEditing = false;
-        let listItems = JSON.parse(localStorage.getItem('listItems')) || [];
-        let chosenItemIndex = JSON.parse(localStorage.getItem('chosenItemIndex')) || null; // Track selected item
-        let chosenTemplate = JSON.parse(localStorage.getItem('chosenTemplate')) || null; // Track the template chosen
+        let files = JSON.parse(localStorage.getItem('files')) || [];
 
         // Toggle editing mode
         const toggleEditMode = () => {
@@ -43,26 +61,58 @@
           renderList();  // Re-render the list to show or hide delete buttons
         };
 
-        // Show the prompt to add a new item
-        const showPrompt = () => {
-          $f7.dialog.prompt('Enter the title for the new item:', '', (value) => {
-            if (value) {
-              addItem(value);
-            }
-          });
+        // Open the popover with options
+        const openPopover = () => {
+          $f7.popover.open('#popover-options');
         };
 
-        // Add a new item to the list
-        const addItem = (title) => {
-          listItems.push({ title });
-          localStorage.setItem('listItems', JSON.stringify(listItems));
+        // Import file handler
+        const importFile = () => {
+          $f7.dialog.prompt('Enter file path or import options for file:', '', (value) => {
+            if (value) {
+              addFile(value, 'file');
+            }
+          });
+          $f7.popover.close(); // Close popover
+        };
+
+        // Create file handler
+        const createFile = () => {
+          $f7.dialog.prompt('Enter the name for the new file (e.g., main.cpp):', '', (value) => {
+            if (value) {
+              addFile(value, 'file');
+            }
+          });
+          $f7.popover.close(); // Close popover
+        };
+
+        // Create folder handler
+        const createFolder = () => {
+          $f7.dialog.prompt('Enter folder name:', '', (value) => {
+            if (value) {
+              addFile(value, 'folder');
+            }
+          });
+          $f7.popover.close(); // Close popover
+        };
+
+        // Export project handler
+        const exportProject = () => {
+          console.log('Export project functionality goes here.');
+          $f7.popover.close(); // Close popover
+        };
+
+        // Add a new file or folder to the list
+        const addFile = (name, type) => {
+          files.push({ name, type, children: [] });
+          localStorage.setItem('files', JSON.stringify(files));
           renderList();  // Immediately re-render the list without refreshing
         };
 
-        // Delete an item from the list
+        // Delete a file or folder from the list
         const deleteItem = (index) => {
-          listItems.splice(index, 1);
-          localStorage.setItem('listItems', JSON.stringify(listItems));
+          files.splice(index, 1);
+          localStorage.setItem('files', JSON.stringify(files));
           renderList();  // Immediately re-render the list without refreshing
         };
 
@@ -71,21 +121,27 @@
           const listElement = document.getElementById('dynamic-list');
           listElement.innerHTML = '';  // Clear the list before re-rendering
 
-          listItems.forEach((item, index) => {
+          files.forEach((item, index) => {
             const listItem = document.createElement('li');
             listItem.classList.add('item-content');
-            listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
-            listItem.style.margin = '4px 0';      // Reduce margin to make it more compact
+            listItem.style.padding = '8px 16px';
+            listItem.style.margin = '4px 0';
 
             const listInner = document.createElement('div');
             listInner.classList.add('item-inner');
 
+            const listIcon = document.createElement('i');
+            listIcon.classList.add('icon', 'f7-icons');
+            listIcon.innerHTML = item.type === 'folder' ? 'folder' : 'document';
+            listIcon.style.marginRight = '10px';
+
             const listTitle = document.createElement('div');
             listTitle.classList.add('item-title');
-            listTitle.textContent = item.title;
-            listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
-            listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
+            listTitle.textContent = item.name;
+            listTitle.style.fontSize = '14px';
+            listTitle.style.lineHeight = '1.5';
 
+            listInner.appendChild(listIcon);
             listInner.appendChild(listTitle);
 
             if (isEditing) {
@@ -94,18 +150,23 @@
               deleteButton.classList.add('link', 'icon-only');
               deleteButton.innerHTML = '<i class="icon f7-icons">trash</i>';
               deleteButton.addEventListener('click', () => deleteItem(index));
-              deleteButton.style.fontSize = '20px'; // Optional: Adjust the delete icon size
+              deleteButton.style.fontSize = '20px';
               listInner.appendChild(deleteButton);
             }
 
-            // Add event listener to show the template selection dialog and save to localStorage
+            // Add click event to open file/folder details
             listItem.addEventListener('click', () => {
-              const isTemplateChosen = JSON.parse(localStorage.getItem('chosenTemplateForItem' + index));
-              if (isTemplateChosen) {
-                // If template was chosen previously, open the fullscreen modal directly
-                openFullscreenPopup(index);
+              if (item.type === 'folder') {
+                // Handle folder click (for future enhancements)
               } else {
-                openTemplateSelectionDialog(item, index);
+                $f7.dialog.create({
+                  title: 'File Options',
+                  buttons: [
+                    { text: 'Edit', onClick: () => console.log('Edit clicked') },
+                    { text: 'Delete', onClick: () => deleteItem(index) }
+                  ],
+                  verticalButtons: true
+                }).open();
               }
             });
 
@@ -114,72 +175,6 @@
           });
         };
 
-        // Open the alert dialog with "Tweak" and "Application" buttons
-        const openTemplateSelectionDialog = (item, index) => {
-          // Open the alert dialog with the options
-          $f7.dialog.create({
-            title: 'Choose Template',
-            buttons: [
-              {
-                text: 'Tweak',
-                onClick: () => {
-                  console.log('Tweak button selected for item:', item.title);
-                  saveChosenTemplate('Tweak', index);
-                },
-              },
-              {
-                text: 'Application',
-                onClick: () => {
-                  console.log('Application button selected for item:', item.title);
-                  saveChosenTemplate('Application', index);
-                },
-              },
-            ],
-            verticalButtons: true,
-          }).open();
-        };
-
-        // Save the chosen template and item index to localStorage
-        const saveChosenTemplate = (template, index) => {
-          localStorage.setItem('chosenTemplate', JSON.stringify(template));
-          localStorage.setItem('chosenItemIndex', JSON.stringify(index));
-          localStorage.setItem('chosenTemplateForItem' + index, JSON.stringify(true)); // Mark that this item has a template
-          openFullscreenPopup(index); // Automatically open the fullscreen popup after selection
-        };
-
-        // Open fullscreen popup based on template choice
-        const openFullscreenPopup = (index) => {
-          const template = JSON.parse(localStorage.getItem('chosenTemplate'));
-          const item = listItems[index];
-          
-          // Create and open fullscreen popup based on the template
-          let popupContent = '';
-          if (template === 'Tweak') {
-            popupContent = `<div class="popup-inner"><div class="block"><h1>Tweak Template for ${item.title}</h1><p>Content for the Tweak template...</p></div></div>`;
-          } else if (template === 'Application') {
-            popupContent = `<div class="popup-inner"><div class="block"><h1>Application Template for ${item.title}</h1><p>Content for the Application template...</p></div></div>`;
-          }
-
-          $f7.popup.create({
-            content: popupContent,
-            on: {
-              open: () => {
-                console.log('Fullscreen popup opened for', item.title, 'with', template, 'template');
-              },
-            },
-          }).open();
-        };
-
-        // Check if a template was previously chosen, if so, open it again
-        const openPreviouslyChosenTemplate = () => {
-          if (chosenItemIndex !== null && chosenTemplate !== null && listItems[chosenItemIndex]) {
-            const item = listItems[chosenItemIndex];
-            console.log(`Previously chosen template for ${item.title}: ${chosenTemplate}`);
-            openFullscreenPopup(chosenItemIndex);
-          }
-        };
-
-        // Run the previous template check when the page is loaded
         $on('pageInit', () => {
           renderList();  // Render the list when the page is initialized
         });
