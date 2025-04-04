@@ -64,51 +64,21 @@
           renderList();  // Immediately re-render the list without refreshing
         };
 
-        // Show the alert with vertical stacked buttons
-        const showProjectAlert = (project) => {
-          $f7.dialog.create({
-            title: 'Project Actions',
-            cssClass: 'project-dialog',
-            content: `
-              <div class="list">
-                <ul>
-                  <li>
-                    <a href="#" class="item-link list-button" @click=${() => editProject(project)}>Edit Project</a>
-                  </li>
-                  <li>
-                    <a href="#" class="item-link list-button" @click=${() => deleteProject(project)}>Delete Project</a>
-                  </li>
-                </ul>
+        // Show project options in an alert dialog
+        const showProjectAlert = (itemTitle) => {
+          $f7.dialog.alert(
+            `
+            <div style="text-align: center;">
+              <p><strong>Project: ${itemTitle}</strong></p>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="#" class="button button-fill">Edit Project</a>
+                <a href="#" class="button button-fill button-red">Delete Project</a>
               </div>
-            `,
-            buttons: [
-              {
-                text: 'Close',
-                onClick: () => {}
-              }
-            ]
-          }).open();
-        };
-
-        // Handle the Edit Project action
-        const editProject = (project) => {
-          $f7.dialog.prompt('Edit the project title:', project.title, (value) => {
-            if (value) {
-              project.title = value;
-              localStorage.setItem('listItems', JSON.stringify(listItems));
-              renderList();  // Re-render the list after editing
+            </div>`,
+            () => {
+              console.log(`${itemTitle} options selected`);
             }
-          });
-        };
-
-        // Handle the Delete Project action
-        const deleteProject = (project) => {
-          const index = listItems.indexOf(project);
-          if (index > -1) {
-            listItems.splice(index, 1);
-            localStorage.setItem('listItems', JSON.stringify(listItems));
-            renderList();  // Re-render the list after deleting
-          }
+          );
         };
 
         // Render the list items dynamically
@@ -130,6 +100,7 @@
             listTitle.textContent = item.title;
             listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
             listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
+            listTitle.addEventListener('click', () => showProjectAlert(item.title)); // Show alert on click
 
             listInner.appendChild(listTitle);
 
@@ -142,9 +113,6 @@
               deleteButton.style.fontSize = '20px'; // Optional: Adjust the delete icon size
               listInner.appendChild(deleteButton);
             }
-
-            // Add the click event to show the project alert
-            listItem.addEventListener('click', () => showProjectAlert(item));
 
             listItem.appendChild(listInner);
             listElement.appendChild(listItem);
@@ -160,4 +128,5 @@
     </script>
   </div>
 </template>
+
 
