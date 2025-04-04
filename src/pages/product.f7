@@ -52,7 +52,7 @@
 
         // Add a new item to the list
         const addItem = (title) => {
-          listItems.push({ title });
+          listItems.push({ title, templateSelected: null });
           localStorage.setItem('listItems', JSON.stringify(listItems));
           renderList();  // Immediately re-render the list without refreshing
         };
@@ -62,6 +62,13 @@
           listItems.splice(index, 1);
           localStorage.setItem('listItems', JSON.stringify(listItems));
           renderList();  // Immediately re-render the list without refreshing
+        };
+
+        // Handle template selection
+        const selectTemplate = (index, templateName) => {
+          listItems[index].templateSelected = templateName;
+          localStorage.setItem('listItems', JSON.stringify(listItems));
+          renderList();  // Re-render the list with updated state
         };
 
         // Render the list items dynamically
@@ -96,111 +103,35 @@
               listInner.appendChild(deleteButton);
             }
 
-            // Add event listener to open alert with vertical buttons on click
-            listItem.addEventListener('click', () => {
-              $f7.dialog.create({
-                title: 'Templates',
-                buttons: [
-                  {
-                    text: 'Modern Application',
-                    onClick: () => {
-                      console.log('Button 1 selected');
+            // If no template has been selected, show the template dialog
+            if (!item.templateSelected) {
+              listItem.addEventListener('click', () => {
+                $f7.dialog.create({
+                  title: 'Templates',
+                  buttons: [
+                    {
+                      text: 'Modern Application',
+                      onClick: () => selectTemplate(index, 'Modern Application'),
                     },
-                  },
-                  {
-                    text: 'Modern Swift Application',
-                    onClick: () => {
-                      console.log('Button 2 selected');
+                    {
+                      text: 'Modern Swift Application',
+                      onClick: () => selectTemplate(index, 'Modern Swift Application'),
                     },
-                  },
-                  {
-                    text: 'SwiftUI Application',
-                    onClick: () => {
-                      console.log('Button 3 selected');
+                    {
+                      text: 'SwiftUI Application',
+                      onClick: () => selectTemplate(index, 'SwiftUI Application'),
                     },
-                  },
-                  {
-                    text: 'Control Center Module (11up)',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Framework',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Library',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Null',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Preference Bundle',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Preference Bundle Swift',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Theme',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Tool',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Tool Swift',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Tweak',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Tweak Swift',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'Tweak & Simple Preferences',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                  {
-                    text: 'XPC Service Modern',
-                    onClick: () => {
-                      console.log('Button 3 selected');
-                    },
-                  },
-                ],
-                verticalButtons: true,
-              }).open();
-            });
+                    // Add other templates here
+                  ],
+                  verticalButtons: true,
+                }).open();
+              });
+            } else {
+              // Template has been selected, now open a new page
+              listItem.addEventListener('click', () => {
+                $f7.views.main.router.navigate(`/template-page/${item.templateSelected}`);
+              });
+            }
 
             listItem.appendChild(listInner);
             listElement.appendChild(listItem);
