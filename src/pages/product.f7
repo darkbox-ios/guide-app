@@ -102,19 +102,97 @@
                 title: 'Project Actions',
                 buttons: [
                   {
-                    text: 'Button 1',
+                    text: 'Modern Application',
                     onClick: () => {
                       console.log('Button 1 selected');
                     },
                   },
                   {
-                    text: 'Button 2',
+                    text: 'Modern Swift Application',
                     onClick: () => {
                       console.log('Button 2 selected');
                     },
                   },
                   {
-                    text: 'Button 3',
+                    text: 'SwiftUI Application',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Control Center Module (11up)',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Framework',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Library',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Null',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Preference Bundle',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Preference Bundle Swift',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Theme',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Tool',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Tool Swift',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Tweak',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Tweak Swift',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'Tweak & Simple Preferences',
+                    onClick: () => {
+                      console.log('Button 3 selected');
+                    },
+                  },
+                  {
+                    text: 'XPC Service Modern',
                     onClick: () => {
                       console.log('Button 3 selected');
                     },
