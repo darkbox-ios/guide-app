@@ -5,10 +5,6 @@
       <div class="navbar-inner sliding" style="display: flex; justify-content: space-between; align-items: center;">
         <div class="title">File Editor</div>
         <div class="right">
-          <!-- Pencil Icon for Editing Mode -->
-          <a href="#" class="link icon-only" @click=${() => toggleEditMode()} style="font-size: 20px;">
-            <i class="icon f7-icons">pencil</i>
-          </a>
           <!-- Plus Icon for Adding New Item -->
           <a href="#" class="link icon-only" @click=${() => showPrompt()} style="font-size: 20px;">
             <i class="icon f7-icons">plus</i>
@@ -31,15 +27,8 @@
     </div>
 
     <script>
-      export default (props, { $f7, $, $on, $onMounted, $update }) => {
-        let isEditing = false;
+      export default (props, { $f7, $, $on, $onMounted }) => {
         let listItems = JSON.parse(localStorage.getItem('listItems')) || [];
-
-        // Toggle editing mode
-        const toggleEditMode = () => {
-          isEditing = !isEditing;
-          renderList();  // Re-render the list to show or hide delete buttons
-        };
 
         // Show the prompt to add a new item
         const showPrompt = () => {
@@ -57,15 +46,36 @@
           renderList();  // Immediately re-render the list without refreshing
         };
 
-        // Delete an item from the list
-        const deleteItem = (index) => {
-          listItems.splice(index, 1);
-          localStorage.setItem('listItems', JSON.stringify(listItems));
-          renderList();  // Immediately re-render the list without refreshing
+        // Render the list items dynamically
+        const renderList = () => {
+          const listElement = document.getElementById('dynamic-list');
+          listElement.innerHTML = '';  // Clear the list before re-rendering
+
+          listItems.forEach((item, index) => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('item-content');
+            listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
+            listItem.style.margin = '4px 0';      // Reduce margin to make it more compact
+
+            const listInner = document.createElement('div');
+            listInner.classList.add('item-inner');
+
+            const listTitle = document.createElement('div');
+            listTitle.classList.add('item-title');
+            listTitle.textContent = item.title;
+            listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
+            listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
+            listTitle.addEventListener('click', () => showProjectPicker());  // Show the picker on item click
+
+            listInner.appendChild(listTitle);
+
+            listItem.appendChild(listInner);
+            listElement.appendChild(listItem);
+          });
         };
 
         // Initialize Project Picker
-        const initializeProject = () => {
+        const showProjectPicker = () => {
           $f7.picker.create({
             inputEl: '#project-picker',
             cols: [
@@ -89,51 +99,12 @@
 
         // Open a new page with the selected project
         const openProjectPage = (projectType) => {
-          // Assuming you have a page template for each project type
-          const newPageUrl = `/project/${projectType.toLowerCase().replace(/\s+/g, '-')}`;  // Customize this URL structure as needed
-          $f7.views.main.router.navigate(newPageUrl);
+          $f7.views.main.router.navigate(`/project/${projectType.toLowerCase().replace(/\s+/g, '-')}`);  // Redirect to a new page
         };
 
-        // Render the list items dynamically
-        const renderList = () => {
-          const listElement = document.getElementById('dynamic-list');
-          listElement.innerHTML = '';  // Clear the list before re-rendering
-
-          listItems.forEach((item, index) => {
-            const listItem = document.createElement('li');
-            listItem.classList.add('item-content');
-            listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
-            listItem.style.margin = '4px 0';      // Reduce margin to make it more compact
-
-            const listInner = document.createElement('div');
-            listInner.classList.add('item-inner');
-
-            const listTitle = document.createElement('div');
-            listTitle.classList.add('item-title');
-            listTitle.textContent = item.title;
-            listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
-            listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
-            listTitle.addEventListener('click', initializeProject);  // Show the picker on item click
-
-            listInner.appendChild(listTitle);
-
-            if (isEditing) {
-              const deleteButton = document.createElement('a');
-              deleteButton.href = '#';
-              deleteButton.classList.add('link', 'icon-only');
-              deleteButton.innerHTML = '<i class="icon f7-icons">trash</i>';
-              deleteButton.addEventListener('click', () => deleteItem(index));
-              deleteButton.style.fontSize = '20px'; // Optional: Adjust the delete icon size
-              listInner.appendChild(deleteButton);
-            }
-
-            listItem.appendChild(listInner);
-            listElement.appendChild(listItem);
-          });
-        };
-
+        // Render the list when the page is initialized
         $on('pageInit', () => {
-          renderList();  // Render the list when the page is initialized
+          renderList();  
         });
 
         return $render;
