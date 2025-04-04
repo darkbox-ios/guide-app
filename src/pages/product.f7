@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <!-- Navbar with a background and the Plus icon -->
+    <!-- Navbar with a background -->
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner">
@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <!-- Page Content -->
+    <!-- Page content -->
     <div class="page-content">
       <!-- Inset Grouped List Item -->
       <div class="list inset">
@@ -29,7 +29,7 @@
           </li>
           <!-- Compile Button -->
           <li>
-            <a href="#" class="button button-fill color-accent w-100">Compile</a>
+            <a href="#" class="button button-fill color-accent" style="width: 100%;">Compile</a>
           </li>
         </ul>
       </div>
@@ -41,7 +41,7 @@
 export default {
   methods: {
     openFilePicker() {
-      // Simulate selecting a .zip file manually
+      // Simulating file selection without using <input type="file">
       const fileName = prompt('Enter the file name (must be a .zip file):');
       
       if (fileName && fileName.endsWith('.zip')) {
@@ -56,8 +56,5 @@ export default {
 </script>
 
 <style>
-/* Custom style for the Compile button */
-.w-100 {
-  width: 100%; /* Make the button strech to the full width of the list item */
-}
+/* Custom styles, if any, can go here */
 </style>
