@@ -47,9 +47,9 @@
           // Toggle editing mode
           toggleEditMode() {
             this.isEditing = !this.isEditing;
-            this.renderList(); // Re-render the list to show or hide delete buttons
+            this.renderList();  // Re-render the list to show or hide delete buttons
           },
-          
+
           // Show the prompt to add a new item
           showPrompt() {
             this.$f7.dialog.prompt('Enter the title for the new item:', '', (value) => {
@@ -61,32 +61,29 @@
 
           // Add a new item to the list
           addItem(title) {
-            const newItem = { title, template: null }; // Include a template field initially null
-            this.listItems.push(newItem);
+            this.listItems.push({ title });
             localStorage.setItem('listItems', JSON.stringify(this.listItems));
-            this.renderList(); // Immediately re-render the list without refreshing
+            this.renderList();  // Immediately re-render the list without refreshing
           },
 
           // Delete an item from the list
           deleteItem(index) {
             this.listItems.splice(index, 1);
             localStorage.setItem('listItems', JSON.stringify(this.listItems));
-            this.renderList(); // Immediately re-render the list without refreshing
+            this.renderList();  // Immediately re-render the list without refreshing
           },
 
-          // Show dialog to choose template when project item is clicked
+          // Show a dialog with template options when a project is clicked
           chooseTemplate(index) {
-            this.$f7.dialog.action({
-              title: 'Choose template',
-              buttons: this.templates.map(template => ({
-                text: template,
-                onClick: () => {
-                  this.listItems[index].template = template;
-                  localStorage.setItem('listItems', JSON.stringify(this.listItems));
-                  this.renderList();
-                }
-              }))
-            });
+            // Show alert with options
+            this.$f7.dialog.alert(
+              `Choose a template for project "${this.listItems[index].title}"`,
+              'Template Options',
+              () => {
+                // After choosing the template, do nothing
+                // You can log the selected project title if needed, for now it just shows the alert
+              }
+            );
           },
 
           // Render the list items dynamically
@@ -108,17 +105,9 @@
               listTitle.textContent = item.title;
               listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
               listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
-              listTitle.addEventListener('click', () => this.chooseTemplate(index));  // On click, show template choice dialog
+              listTitle.addEventListener('click', () => this.chooseTemplate(index));  // Show template dialog on click
 
               listInner.appendChild(listTitle);
-
-              // Display template if it's chosen
-              if (item.template) {
-                const templateLabel = document.createElement('div');
-                templateLabel.classList.add('item-after');
-                templateLabel.textContent = `Template: ${item.template}`;
-                listInner.appendChild(templateLabel);
-              }
 
               if (this.isEditing) {
                 const deleteButton = document.createElement('a');
