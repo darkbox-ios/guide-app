@@ -35,6 +35,9 @@
         let isEditing = false;
         let listItems = JSON.parse(localStorage.getItem('listItems')) || [];
 
+        // Get selected projects from localStorage to avoid showing them again
+        const selectedProjects = JSON.parse(localStorage.getItem('selectedProjects')) || [];
+
         // Toggle editing mode
         const toggleEditMode = () => {
           isEditing = !isEditing;
@@ -52,7 +55,7 @@
 
         // Add a new item to the list
         const addItem = (title) => {
-          listItems.push({ title, templateSelected: null });
+          listItems.push({ title });
           localStorage.setItem('listItems', JSON.stringify(listItems));
           renderList();  // Immediately re-render the list without refreshing
         };
@@ -64,11 +67,16 @@
           renderList();  // Immediately re-render the list without refreshing
         };
 
-        // Handle template selection
-        const selectTemplate = (index, templateName) => {
-          listItems[index].templateSelected = templateName;
-          localStorage.setItem('listItems', JSON.stringify(listItems));
-          renderList();  // Re-render the list with updated state
+        // Mark a project as selected and store in localStorage
+        const markAsSelected = (projectName) => {
+          selectedProjects.push(projectName);
+          localStorage.setItem('selectedProjects', JSON.stringify(selectedProjects));
+          navigateToProjectPage(projectName);
+        };
+
+        // Navigate to the project page
+        const navigateToProjectPage = (projectName) => {
+          $f7.views.main.router.navigate(`/project/${projectName}/`);
         };
 
         // Render the list items dynamically
@@ -77,6 +85,8 @@
           listElement.innerHTML = '';  // Clear the list before re-rendering
 
           listItems.forEach((item, index) => {
+            if (selectedProjects.includes(item.title)) return; // Skip projects that have been selected
+
             const listItem = document.createElement('li');
             listItem.classList.add('item-content');
             listItem.style.padding = '8px 16px';  // Reduce padding to make it less "fat"
@@ -103,35 +113,10 @@
               listInner.appendChild(deleteButton);
             }
 
-            // If no template has been selected, show the template dialog
-            if (!item.templateSelected) {
-              listItem.addEventListener('click', () => {
-                $f7.dialog.create({
-                  title: 'Templates',
-                  buttons: [
-                    {
-                      text: 'Modern Application',
-                      onClick: () => selectTemplate(index, 'Modern Application'),
-                    },
-                    {
-                      text: 'Modern Swift Application',
-                      onClick: () => selectTemplate(index, 'Modern Swift Application'),
-                    },
-                    {
-                      text: 'SwiftUI Application',
-                      onClick: () => selectTemplate(index, 'SwiftUI Application'),
-                    },
-                    // Add other templates here
-                  ],
-                  verticalButtons: true,
-                }).open();
-              });
-            } else {
-              // Template has been selected, now open a new page
-              listItem.addEventListener('click', () => {
-                $f7.views.main.router.navigate(`/template-page/${item.templateSelected}`);
-              });
-            }
+            // Add event listener to select the project and navigate to the project page
+            listItem.addEventListener('click', () => {
+              markAsSelected(item.title);  // Mark the project as selected
+            });
 
             listItem.appendChild(listInner);
             listElement.appendChild(listItem);
@@ -147,3 +132,28 @@
     </script>
   </div>
 </template>
+
+<!-- This is the Project page template -->
+<template>
+  <div class="page" data-name="project">
+    <div class="navbar">
+      <div class="navbar-inner sliding">
+        <div class="title">{{ projectName }}</div>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="block">
+        <div class="block-title">Project: {{ projectName }}</div>
+        <!-- Add your project-specific content here -->
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  export default (props) => {
+    const projectName = props.$route.params.projectName;  // Get project name from the route
+    return $render;
+  };
+</script>
