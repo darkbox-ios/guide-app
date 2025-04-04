@@ -1,81 +1,24 @@
 <template>
   <div class="page">
-    <!-- Topbar -->
+    <!-- Navbar with a background -->
     <div class="navbar">
+      <div class="navbar-bg"></div>
       <div class="navbar-inner">
-        <div class="left">
-          <a href="#" class="link icon-only">
-            <i class="icon-bars"></i>
-          </a>
-        </div>
-        <div class="title">Tweak Compiler</div>
-        <div class="right">
-          <a href="#" class="link icon-only" @click="openFilePicker">
-            <i class="icon f7-icons">plus</i>
-          </a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Content Block -->
-    <div class="block">
-      <div class="list inset">
-        <!-- Dynamically show the imported file's name -->
-        <ul>
-          <li v-if="fileName" class="item-content">
-            <div class="item-inner">
-              <div class="item-title">{{ fileName }}</div>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <!-- Compile Button -->
-      <div v-if="fileName">
-        <a href="#" class="button button-large button-fill color-accent" @click="compile">Compile</a>
+        <div class="title sliding">Compile</div>
       </div>
     </div>
 
-    <!-- Hidden File Input -->
-    <input type="file" ref="fileInput" style="display:none" accept=".zip" @change="onFileChange" />
+    <!-- Page content -->
+    <div class="page-content">
+      <p>Welcome to the Compile page!</p>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      fileName: "",  // To store the name of the imported zip file
-    };
-  },
-  methods: {
-    // Open the file picker
-    openFilePicker() {
-      this.$refs.fileInput.click();
-    },
-    
-    // Handle the file selection
-    onFileChange(event) {
-      const file = event.target.files[0];
-      
-      if (file && file.name.endsWith('.zip')) {
-        // Extract the file name without the .zip extension
-        this.fileName = file.name.replace(/\.zip$/, '');
-      } else {
-        // Handle invalid file type
-        this.$f7.dialog.alert('Please select a .zip file.');
-      }
-    },
-    
-    // Handle the compile button click
-    compile() {
-      this.$f7.dialog.alert(`Compiling the file: ${this.fileName}.zip`);
-    }
-  }
-};
+  export default () => {
+    return $render;
+  };
 </script>
 
-<style scoped>
-.button-compile {
-  background-color: var(--f7-button-accent-color);
-}
-</style>
+
