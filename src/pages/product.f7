@@ -101,13 +101,13 @@
               listInner.appendChild(deleteButton);
             }
 
-            // Add event listener to select project
+            // Add event listener to open a fullscreen popup with project details
             listItem.addEventListener('click', () => {
               // Save the chosen project to localStorage
               localStorage.setItem(item.title, 'chosen');
 
-              // Create and open the new page dynamically
-              createNewProjectPage(item.title);
+              // Open fullscreen popup for the selected project
+              openProjectPopup(item.title);
             });
 
             listItem.appendChild(listInner);
@@ -115,35 +115,54 @@
           });
         };
 
-        // Function to create a new project page dynamically
-        const createNewProjectPage = (projectName) => {
-          // Dynamically create a new Framework7 page
-          const newPage = document.createElement('div');
-          newPage.classList.add('page');
-          newPage.dataset.name = 'project-detail';
+        // Function to open the fullscreen popup
+        const openProjectPopup = (projectName) => {
+          // Create the popup container
+          const popup = document.createElement('div');
+          popup.classList.add('popup');
+          popup.classList.add('popup-fullscreen');
+          
+          const popupContent = document.createElement('div');
+          popupContent.classList.add('view', 'view-main');
 
-          // Create the navbar with project name
+          // Create navbar inside the popup
           const navbar = document.createElement('div');
           navbar.classList.add('navbar');
           navbar.innerHTML = `
             <div class="navbar-bg"></div>
             <div class="navbar-inner sliding" style="display: flex; justify-content: space-between; align-items: center;">
               <div class="title">${projectName}</div>
+              <a href="#" class="link icon-only" style="font-size: 20px;" onclick="closePopup()">
+                <i class="icon f7-icons">close</i>
+              </a>
             </div>
           `;
-          newPage.appendChild(navbar);
 
-          // Create the page content (empty for now)
+          // Add content inside the popup (you can customize this content as needed)
           const pageContent = document.createElement('div');
           pageContent.classList.add('page-content');
           pageContent.innerHTML = `<div class="block">Content for ${projectName}</div>`;
-          newPage.appendChild(pageContent);
 
-          // Append the newly created page to the DOM
-          document.body.appendChild(newPage);
+          popupContent.appendChild(navbar);
+          popupContent.appendChild(pageContent);
 
-          // Now navigate to this new page
-          $f7.views.main.router.navigate(`/project-detail/`);
+          popup.appendChild(popupContent);
+
+          // Append the popup to the body
+          document.body.appendChild(popup);
+
+          // Open the popup
+          $f7.popup.open(popup);
+        };
+
+        // Function to close the popup
+        const closePopup = () => {
+          // Close the popup when the close button is clicked
+          const popup = document.querySelector('.popup');
+          if (popup) {
+            $f7.popup.close(popup);
+            popup.remove(); // Remove popup from DOM after closing
+          }
         };
 
         $on('pageInit', () => {
