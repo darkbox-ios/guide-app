@@ -64,23 +64,6 @@
           renderList();  // Immediately re-render the list without refreshing
         };
 
-        // Show project options in an alert dialog
-        const showProjectAlert = (itemTitle) => {
-          $f7.dialog.alert(
-            `
-            <div style="text-align: center;">
-              <p><strong>Project: ${itemTitle}</strong></p>
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <a href="#" class="button button-fill">Edit Project</a>
-                <a href="#" class="button button-fill button-red">Delete Project</a>
-              </div>
-            </div>`,
-            () => {
-              console.log(`${itemTitle} options selected`);
-            }
-          );
-        };
-
         // Render the list items dynamically
         const renderList = () => {
           const listElement = document.getElementById('dynamic-list');
@@ -100,7 +83,6 @@
             listTitle.textContent = item.title;
             listTitle.style.fontSize = '14px';  // Optional: Make text slightly smaller
             listTitle.style.lineHeight = '1.5'; // Optional: Make the text more compact
-            listTitle.addEventListener('click', () => showProjectAlert(item.title)); // Show alert on click
 
             listInner.appendChild(listTitle);
 
@@ -113,6 +95,34 @@
               deleteButton.style.fontSize = '20px'; // Optional: Adjust the delete icon size
               listInner.appendChild(deleteButton);
             }
+
+            // Add event listener to open alert on click
+            listItem.addEventListener('click', () => {
+              $f7.dialog.alert(
+                'Select an action:',
+                'Project Actions',
+                [
+                  {
+                    text: 'Option 1',
+                    onClick: () => {
+                      console.log('Option 1 selected');
+                    },
+                  },
+                  {
+                    text: 'Option 2',
+                    onClick: () => {
+                      console.log('Option 2 selected');
+                    },
+                  },
+                  {
+                    text: 'Option 3',
+                    onClick: () => {
+                      console.log('Option 3 selected');
+                    },
+                  },
+                ]
+              );
+            });
 
             listItem.appendChild(listInner);
             listElement.appendChild(listItem);
