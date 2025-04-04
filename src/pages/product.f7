@@ -41,22 +41,15 @@
 export default {
   methods: {
     openFilePicker() {
-      // Create a file input element dynamically
-      const fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.accept = '.zip';  // Only accept .zip files
-
-      fileInput.onchange = (event) => {
-        const file = event.target.files[0]; // Get the selected file
-        if (file) {
-          // Update the list item with the selected file name
-          const fileName = file.name;
-          document.getElementById('file-name').textContent = fileName;
-        }
-      };
-
-      // Trigger the file picker
-      fileInput.click();
+      // Simulate selecting a .zip file manually
+      const fileName = prompt('Enter the file name (must be a .zip file):');
+      
+      if (fileName && fileName.endsWith('.zip')) {
+        // Update the list item with the selected file name
+        document.getElementById('file-name').textContent = fileName;
+      } else if (fileName) {
+        alert('Please select a valid .zip file.');
+      }
     }
   }
 };
@@ -65,6 +58,6 @@ export default {
 <style>
 /* Custom style for the Compile button */
 .w-100 {
-  width: 100%; /* Make the button stretch to the full width of the list item */
+  width: 100%; /* Make the button strech to the full width of the list item */
 }
 </style>
