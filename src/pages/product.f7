@@ -99,7 +99,7 @@
             // Add event listener to open alert with vertical buttons on click
             listItem.addEventListener('click', () => {
               $f7.dialog.create({
-                title: 'Project Actions',
+                title: 'Templates',
                 buttons: [
                   {
                     text: 'Modern Application',
